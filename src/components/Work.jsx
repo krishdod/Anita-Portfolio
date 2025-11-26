@@ -15,7 +15,7 @@ const Work = () => {
     {
       title: 'Senior Shopify Full Stack Developer',
       company: 'Function Growth',
-      period: '2023 - Present',
+      period: '2025 - Present',
       location: 'New York (Remote)',
       highlight: 'Custom apps, Shopify Functions, and checkout extensions for high‑growth brands.',
       tags: ['Custom Apps', 'Functions', 'Checkout Extensions'],
@@ -23,7 +23,7 @@ const Work = () => {
     {
       title: 'Shopify Developer',
       company: 'Tenovia Solutions',
-      period: '2021 - 2023',
+      period: '2023 - 2025',
       location: 'Bangalore, IN',
       highlight: 'B2B marketplaces, automation, and scalable architectures for enterprise merchants.',
       tags: ['B2B', 'Automation', 'Marketplaces'],
@@ -31,7 +31,7 @@ const Work = () => {
     {
       title: 'Shopify Developer',
       company: 'ISpark IT',
-      period: '2019 - 2021',
+      period: '2023 - 2023',
       location: 'Ahmedabad, IN',
       highlight: 'Private apps, Admin API integrations, and operational tooling.',
       tags: ['Private Apps', 'Admin API', 'Integrations'],
@@ -39,15 +39,15 @@ const Work = () => {
     {
       title: 'Shopify Developer',
       company: 'Creatpix Infotech',
-      period: '2017 - 2019',
+      period: '2021 - 2023',
       location: 'Ahmedabad, IN',
-      highlight: 'Theme development, performance optimization, and LCP & SEO improvements.',
+      highlight: 'Theme development, performance optimisation, and LCP & SEO improvements.',
       tags: ['Themes', 'Performance', 'SEO'],
     },
     {
       title: 'Technical Lead',
       company: 'Bacha Motors (TATA)',
-      period: '2015 - 2017',
+      period: '2020 - 2021',
       location: 'Gujarat, IN',
       highlight: 'Led internal systems using PHP & MySQL, improving workflows across teams.',
       tags: ['PHP', 'MySQL', 'Internal Systems'],
