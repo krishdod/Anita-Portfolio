@@ -46,7 +46,7 @@ const HeroEnhanced = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-background pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-6 sm:pb-8 md:pb-10">
       {/* Advanced Gradient Mesh Background */}
-      <div className="absolute inset-0 gradient-mesh opacity-60" />
+      <div className="absolute inset-0 gradient-mesh opacity-30 dark:opacity-60" />
       
       {/* Animated Background with Beams */}
       <BackgroundBeams className="opacity-50" />
@@ -78,7 +78,7 @@ const HeroEnhanced = () => {
         }}
       />
       <motion.div
-        className="absolute bottom-1/4 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-purple-500/30 via-pink-500/20 to-transparent rounded-full blur-[120px] glow-purple"
+        className="absolute bottom-1/4 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-purple-500/10 dark:from-purple-500/30 via-pink-500/10 dark:via-pink-500/20 to-transparent rounded-full blur-[120px] glow-purple"
         animate={{
           x: [0, -150, 0],
           y: [0, -80, 0],
@@ -92,7 +92,7 @@ const HeroEnhanced = () => {
         }}
       />
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-pink-500/20 via-blue-500/15 to-transparent rounded-full blur-[80px] glow-pink"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-pink-500/10 dark:from-pink-500/20 via-blue-500/8 dark:via-blue-500/15 to-transparent rounded-full blur-[80px] glow-pink"
         animate={{
           scale: [1, 1.4, 1],
           rotate: [0, 180, 360],
@@ -115,7 +115,7 @@ const HeroEnhanced = () => {
           {/* Badge with Glow */}
           <motion.div variants={staggerItem} className="mb-6 sm:mb-8">
             <motion.div
-              className="inline-flex items-center gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-full border border-blue-500/40 bg-blue-500/15 backdrop-blur-md relative"
+              className="inline-flex items-center gap-2 px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-full border border-blue-500/40 dark:border-blue-500/40 bg-blue-100/80 dark:bg-blue-500/15 backdrop-blur-md relative"
               whileHover={{ 
                 scale: 1.08, 
                 boxShadow: "0 0 30px rgba(59, 130, 246, 0.6)",
@@ -141,9 +141,9 @@ const HeroEnhanced = () => {
                   scale: { duration: 1.5, repeat: Infinity }
                 }}
               >
-                <Sparkles size={18} className="text-blue-400" />
+                <Sparkles size={18} className="text-blue-600 dark:text-blue-400" />
               </motion.div>
-              <span className="text-xs sm:text-sm md:text-base font-semibold text-white tracking-wide">Open to Full-Time & Freelance</span>
+              <span className="text-xs sm:text-sm md:text-base font-semibold text-blue-700 dark:text-white tracking-wide">Open to Full-Time & Freelance</span>
             </motion.div>
           </motion.div>
 
@@ -151,7 +151,7 @@ const HeroEnhanced = () => {
           <motion.div variants={staggerItem} className="mb-6 sm:mb-8">
             <h1 className="leading-[0.9] tracking-tighter text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[10rem] font-black">
               <motion.span 
-                className="block mb-2 sm:mb-3 md:mb-4 text-white/90 font-light tracking-normal text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+                className="block mb-2 sm:mb-3 md:mb-4 text-foreground/90 dark:text-white/90 font-light tracking-normal text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
@@ -184,7 +184,7 @@ const HeroEnhanced = () => {
 
           {/* Animated Role with Text Generate Effect */}
           <motion.div variants={staggerItem} className="mb-8 sm:mb-10">
-            <div className="flex items-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-light text-gray-200">
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-light text-foreground/80 dark:text-gray-200">
               <span className="font-extralight">I</span>
               <motion.div
                 key={currentWord}
@@ -229,7 +229,7 @@ const HeroEnhanced = () => {
                 <Code2 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" strokeWidth={2} />
               </motion.div>
               <div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-light leading-tight text-gray-100">
+                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-light leading-tight text-foreground/90 dark:text-gray-100">
                   <motion.span
                     className="block mb-2"
                     initial={{ opacity: 0, x: -30 }}
@@ -239,7 +239,7 @@ const HeroEnhanced = () => {
                     Senior Shopify Full Stack Developer
                   </motion.span>
                   <motion.span
-                    className="block mb-2 text-gray-300"
+                    className="block mb-2 text-foreground/70 dark:text-gray-300"
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.7 }}
@@ -262,15 +262,15 @@ const HeroEnhanced = () => {
           {/* Description with Text Generate Effect */}
           <motion.div variants={staggerItem} className="mb-10 sm:mb-12 md:mb-14 max-w-4xl">
             <motion.p
-              className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-gray-300 leading-relaxed font-light"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-foreground/80 dark:text-gray-300 leading-relaxed font-light"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
             >
               I build{' '}
-              <span className="font-semibold text-white">high-performing Shopify stores</span>,{' '}
-              <span className="font-semibold text-white">custom apps</span>, and{' '}
-              <span className="font-semibold text-white">checkout experiences</span> that{' '}
+              <span className="font-semibold text-foreground dark:text-white">high-performing Shopify stores</span>,{' '}
+              <span className="font-semibold text-foreground dark:text-white">custom apps</span>, and{' '}
+              <span className="font-semibold text-foreground dark:text-white">checkout experiences</span> that{' '}
               <motion.span
                 className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 font-bold"
                 animate={{ opacity: [0.8, 1, 0.8] }}
@@ -326,7 +326,7 @@ const HeroEnhanced = () => {
                 e.preventDefault()
                 smoothScrollTo('contact', 80)
               }}
-              className="relative px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl font-bold rounded-full border-2 border-blue-400/60 text-blue-400 hover:text-white backdrop-blur-xl glass border-gradient transition-all duration-300 overflow-hidden group"
+              className="relative px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl font-bold rounded-full border-2 border-blue-500/60 dark:border-blue-400/60 text-blue-600 dark:text-blue-400 hover:text-white dark:hover:text-white backdrop-blur-xl glass border-gradient transition-all duration-300 overflow-hidden group"
               whileHover={{ 
                 scale: 1.1,
                 borderColor: 'rgba(147, 51, 234, 0.8)',
@@ -448,7 +448,7 @@ const HeroEnhanced = () => {
               >
                 <motion.button
                   onClick={scrollToNext}
-                  className="flex flex-col items-center gap-2 sm:gap-3 text-gray-300 hover:text-blue-400 transition-colors group cursor-pointer"
+                  className="flex flex-col items-center gap-2 sm:gap-3 text-foreground/60 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group cursor-pointer"
                   whileHover={{ y: -4 }}
                 >
                   <span className="text-xs sm:text-sm uppercase tracking-wider font-semibold">Scroll Down</span>
@@ -456,7 +456,7 @@ const HeroEnhanced = () => {
                     animate={{ y: [0, 8, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                   >
-                    <ArrowDown size={20} className="group-hover:scale-110 transition-transform text-gray-300 group-hover:text-blue-400" />
+                    <ArrowDown size={20} className="group-hover:scale-110 transition-transform text-foreground/60 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
                   </motion.div>
                 </motion.button>
               </motion.div>
