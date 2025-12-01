@@ -190,6 +190,8 @@ export function ParticleTextEffect({
   const frameCountRef = useRef(0)
   const hasFormedRef = useRef(false)
   const formationCompleteRef = useRef(false)
+  const hasCompletedRef = useRef(false) // Prevent re-animation
+  const isAnimatingRef = useRef(false) // Track if animation is running
 
   // Adjust pixel steps based on screen size for better mobile performance
   const getPixelSteps = (width) => {
@@ -389,20 +391,33 @@ export function ParticleTextEffect({
     if (
       allReachedTarget &&
       particles.length > 0 &&
-      !hasFormedRef.current
+      !hasFormedRef.current &&
+      !hasCompletedRef.current
     ) {
       hasFormedRef.current = true
       formationCompleteRef.current = true
+      hasCompletedRef.current = true
+
+      // Stop the animation loop once complete
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+      isAnimatingRef.current = false
 
       if (onComplete) {
         setTimeout(() => {
           onComplete()
         }, 100)
       }
+      return // Exit animation loop
     }
 
-    frameCountRef.current += 1
-    animationRef.current = requestAnimationFrame(animate)
+    // Only continue animation if not completed
+    if (!hasCompletedRef.current && isAnimatingRef.current) {
+      frameCountRef.current += 1
+      animationRef.current = requestAnimationFrame(animate)
+    }
   }
 
   useEffect(() => {
@@ -441,17 +456,26 @@ export function ParticleTextEffect({
     // Set initial canvas size
     updateCanvasSize()
 
-    // Initialize with text
-    formText(text, canvas)
+    // Only initialize if not already completed
+    if (!hasCompletedRef.current && !isAnimatingRef.current) {
+      // Initialize with text
+      formText(text, canvas)
 
-    // Start animation
-    animate()
+      // Start animation
+      isAnimatingRef.current = true
+      animate()
+    }
 
     // Handle window resize for responsive behavior
     const handleResize = () => {
+      // Don't re-form text if animation is already complete
+      if (hasCompletedRef.current) return
+      
       updateCanvasSize()
-      // Re-form text with new canvas size
-      formText(text, canvas)
+      // Only re-form text if animation hasn't completed
+      if (!hasCompletedRef.current) {
+        formText(text, canvas)
+      }
     }
 
     window.addEventListener('resize', handleResize)
@@ -459,10 +483,12 @@ export function ParticleTextEffect({
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
       }
+      isAnimatingRef.current = false
       window.removeEventListener('resize', handleResize)
     }
-  }, [text, onComplete, gradientClass])
+  }, [text, gradientClass]) // Removed onComplete from dependencies to prevent re-renders
 
   return (
     <div className={`relative w-full h-full ${className}`}>
