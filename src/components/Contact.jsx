@@ -10,7 +10,7 @@ const Contact = () => {
   })
 
   return (
-    <section id="contact" className="min-h-screen flex items-center justify-center section-padding bg-background scroll-mt-20" ref={ref}>
+    <section id="contact" className="min-h-screen flex items-center justify-center section-padding bg-transparent scroll-mt-20 relative overflow-hidden" ref={ref}>
       <div className="container-width max-w-5xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 50 }}

@@ -61,11 +61,9 @@ const Work = () => {
   return (
     <section
       id="work"
-      className="section-padding bg-background scroll-mt-20 relative overflow-hidden"
+      className="section-padding bg-transparent scroll-mt-20 relative overflow-hidden"
       ref={ref}
     >
-      {/* Advanced Background */}
-      <div className="absolute inset-0 gradient-mesh opacity-25" />
       <div className="container-width relative z-10">
         {/* Section Header */}
         <motion.div
@@ -114,18 +112,18 @@ const Work = () => {
           className="relative"
         >
           {/* Vertical line */}
-          <div className="absolute left-4 md:left-6 top-0 bottom-0 border-l border-border/40 pointer-events-none" />
+          <div className="absolute left-5 sm:left-7 md:left-9 lg:left-10 top-0 bottom-0 border-l border-border/50 pointer-events-none" />
 
           <div className="space-y-8 sm:space-y-10 md:space-y-12 px-4">
             {experiences.map((exp, index) => (
               <motion.div
                 key={exp.title + exp.company}
                 variants={itemVariants}
-                className="relative pl-12 sm:pl-14 md:pl-20"
+                className="relative pl-16 sm:pl-20 md:pl-24"
               >
                 {/* Timeline dot */}
-                <div className="absolute left-3 sm:left-4 md:left-6 top-6 -translate-x-1/2">
-                  <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_0_6px_rgba(59,130,246,0.25)]" />
+                <div className="absolute left-5 sm:left-7 md:left-9 lg:left-10 top-6 -translate-x-1/2">
+                  <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_0_6px_rgba(59,130,246,0.25)] border-2 border-background" />
                 </div>
 
                 <Card className="border border-border/80 bg-card/90 backdrop-blur-xl glass hover:border-primary/60 transition-smooth shadow-sm hover:shadow-xl hover:scale-[1.01]">

@@ -4,26 +4,27 @@
 
 @layer base {
   :root {
-    /* Light mode colors */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Light mode colors - rich, cool light theme */
+    --background: 220 40% 92%;
+    /* Darker text for stronger contrast in light mode */
+    --foreground: 222.2 42% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222.2 47.4% 11.2%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 221.2 83.2% 45%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
+    --secondary: 210 30% 92%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
+    --muted: 210 30% 93%;
+    --muted-foreground: 215.4 20% 35%;
+    --accent: 222 84% 56%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 72% 45%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --border: 214.3 31.8% 85%;
+    --input: 214.3 31.8% 85%;
+    --ring: 221.2 83.2% 45%;
     --radius: 0.5rem;
   }
 
@@ -100,7 +101,7 @@
   }
 
   .section-padding {
-    @apply py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 px-4 sm:px-6 lg:px-8;
+    @apply py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 px-4 sm:px-6 lg:px-8;
   }
 
   .section-padding-sm {
@@ -141,6 +142,7 @@
   }
 
   /* Smooth Transitions */
+  /* Smooth Transitions helpers (opt-in only, not global) */
   .transition-smooth {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -153,9 +155,8 @@
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
-  /* Global smooth transitions for sections */
+  /* Remove heavy global transitions from all sections for better scroll performance */
   section {
-    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out, background 0.6s ease-in-out;
     will-change: transform, opacity;
   }
 
@@ -280,10 +281,10 @@
   /* Advanced gradient backgrounds */
   .gradient-mesh {
     background: 
-      radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(147, 51, 234, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.40) 0px, transparent 55%),
+      radial-gradient(at 100% 0%, rgba(147, 51, 234, 0.38) 0px, transparent 55%),
+      radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.38) 0px, transparent 55%),
+      radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.36) 0px, transparent 55%);
   }
 
   .dark .gradient-mesh {

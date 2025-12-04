@@ -15,10 +15,7 @@ const About = () => {
   ]
 
   return (
-    <section id="about" className="section-padding relative overflow-hidden bg-background scroll-mt-20">
-      {/* Advanced Background Elements */}
-      <div className="absolute inset-0 gradient-mesh opacity-40" />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background to-background/95 backdrop-blur-sm" />
+    <section id="about" className="section-padding relative overflow-hidden bg-transparent scroll-mt-20">
       
       <div className="container-width relative z-10">
         {/* Section Header */}

@@ -1,9 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { ArrowDown, Sparkles, Code2, Award, Users, Briefcase, Trophy } from 'lucide-react'
+import { Sparkles, Code2, Award, Users, Briefcase, Trophy } from 'lucide-react'
 import { GradientText } from './animated/GradientText'
-import { SparklesCore } from './ui/sparkles'
-import { BackgroundBeams } from './ui/background-beams'
 import { Card } from './ui/card'
 import { RevealOnScroll } from './effects/RevealOnScroll'
 import { staggerContainer, staggerItem } from '../lib/animations'
@@ -18,7 +16,6 @@ const HeroEnhanced = () => {
 
   const words = ['Build', 'Optimize', 'Scale', 'Deliver']
   const [currentWord, setCurrentWord] = React.useState(0)
-  const [showScrollHint, setShowScrollHint] = React.useState(true)
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -27,83 +24,8 @@ const HeroEnhanced = () => {
     return () => clearInterval(interval)
   }, [])
 
-  React.useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const handleScroll = () => {
-      const hero = document.getElementById('home')
-      if (!hero) return
-      const rect = hero.getBoundingClientRect()
-      const visibleRatio = rect.bottom / window.innerHeight
-      setShowScrollHint(visibleRatio > 0.7)
-    }
-
-    handleScroll()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
   return (
-    <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-background pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-6 sm:pb-8 md:pb-10">
-      {/* Advanced Gradient Mesh Background */}
-      <div className="absolute inset-0 gradient-mesh opacity-30 dark:opacity-60" />
-      
-      {/* Animated Background with Beams */}
-      <BackgroundBeams className="opacity-50" />
-      
-      {/* Enhanced Sparkles Effect */}
-      <SparklesCore
-        id="tsparticles"
-        background="transparent"
-        minSize={0.6}
-        maxSize={2}
-        particleDensity={35}
-        className="w-full h-full pointer-events-none"
-        particleColor="100, 150, 255"
-      />
-
-      {/* Advanced Gradient Orbs with Glow */}
-      <motion.div
-        className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-gradient-to-br from-blue-500/30 via-purple-500/20 to-transparent rounded-full blur-[100px] glow-blue"
-        animate={{
-          x: [0, 150, 0],
-          y: [0, 80, 0],
-          scale: [1, 1.2, 1],
-          opacity: [0.4, 0.6, 0.4],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: 'easeInOut'
-        }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-purple-500/10 dark:from-purple-500/30 via-pink-500/10 dark:via-pink-500/20 to-transparent rounded-full blur-[120px] glow-purple"
-        animate={{
-          x: [0, -150, 0],
-          y: [0, -80, 0],
-          scale: [1, 1.3, 1],
-          opacity: [0.4, 0.7, 0.4],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: 'easeInOut'
-        }}
-      />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-pink-500/10 dark:from-pink-500/20 via-blue-500/8 dark:via-blue-500/15 to-transparent rounded-full blur-[80px] glow-pink"
-        animate={{
-          scale: [1, 1.4, 1],
-          rotate: [0, 180, 360],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 30,
-          repeat: Infinity,
-          ease: 'easeInOut'
-        }}
-      />
+    <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-transparent pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-6 sm:pb-8 md:pb-10">
 
       <div className="container-width w-full relative z-10 px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -351,7 +273,7 @@ const HeroEnhanced = () => {
             {/* Stats Cards */}
             <RevealOnScroll delay={0.1}>
               <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10}>
-                  <Card className="p-4 sm:p-5 md:p-6 lg:p-8 h-full bg-gradient-to-br from-blue-500/5 to-blue-500/10 border-blue-500/20 hover:border-blue-500/40 transition-all">
+                  <Card className="p-4 sm:p-5 md:p-6 lg:p-8 h-full bg-gradient-to-br from-blue-500/5 to-blue-500/10 border-blue-500/20 hover:border-blue-500/40 glass transition-all backdrop-blur-sm">
                   <div className="flex flex-col items-center text-center">
           <motion.div 
                       className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-blue-500/10 flex items-center justify-center mb-2 sm:mb-3 md:mb-4"
@@ -373,7 +295,7 @@ const HeroEnhanced = () => {
 
             <RevealOnScroll delay={0.2}>
               <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10}>
-                <Card className="p-4 sm:p-5 md:p-6 lg:p-8 h-full bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/30 hover:border-purple-500/60 glass glow-purple transition-all backdrop-blur-sm">
+                <Card className="p-4 sm:p-5 md:p-6 lg:p-8 h-full bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/30 hover:border-purple-500/60 glass transition-all backdrop-blur-sm">
                   <div className="flex flex-col items-center text-center">
               <motion.div
                       className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-purple-500/10 flex items-center justify-center mb-2 sm:mb-3 md:mb-4"
@@ -395,7 +317,7 @@ const HeroEnhanced = () => {
 
             <RevealOnScroll delay={0.3}>
               <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10}>
-                <Card className="p-4 sm:p-5 md:p-6 lg:p-8 h-full bg-gradient-to-br from-emerald-500/10 via-green-500/5 to-transparent border-emerald-500/30 hover:border-emerald-500/60 glass transition-all backdrop-blur-sm" style={{ boxShadow: '0 0 20px rgba(34, 197, 94, 0.3)' }}>
+                <Card className="p-4 sm:p-5 md:p-6 lg:p-8 h-full bg-gradient-to-br from-emerald-500/10 via-green-500/5 to-transparent border-emerald-500/30 hover:border-emerald-500/60 glass transition-all backdrop-blur-sm">
                   <div className="flex flex-col items-center text-center">
                   <motion.div 
                       className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-green-500/10 flex items-center justify-center mb-2 sm:mb-3 md:mb-4"
@@ -417,7 +339,7 @@ const HeroEnhanced = () => {
 
             <RevealOnScroll delay={0.4}>
               <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10}>
-                <Card className="p-4 sm:p-5 md:p-6 lg:p-8 h-full bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent border-orange-500/30 hover:border-orange-500/60 glass transition-all backdrop-blur-sm" style={{ boxShadow: '0 0 20px rgba(249, 115, 22, 0.3)' }}>
+                <Card className="p-4 sm:p-5 md:p-6 lg:p-8 h-full bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent border-orange-500/30 hover:border-orange-500/60 glass transition-all backdrop-blur-sm">
                   <div className="flex flex-col items-center text-center">
                     <motion.div
                       className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-orange-500/10 flex items-center justify-center mb-2 sm:mb-3 md:mb-4"
@@ -437,30 +359,6 @@ const HeroEnhanced = () => {
               </Tilt>
             </RevealOnScroll>
             </div>
-
-            {/* Scroll Indicator - Positioned below stats cards */}
-            {showScrollHint && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 2.5, duration: 0.8 }}
-                className="flex flex-col items-center"
-              >
-                <motion.button
-                  onClick={scrollToNext}
-                  className="flex flex-col items-center gap-2 sm:gap-3 text-foreground/60 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group cursor-pointer"
-                  whileHover={{ y: -4 }}
-                >
-                  <span className="text-xs sm:text-sm uppercase tracking-wider font-semibold">Scroll Down</span>
-                  <motion.div
-                    animate={{ y: [0, 8, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                  >
-                    <ArrowDown size={20} className="group-hover:scale-110 transition-transform text-foreground/60 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
-                  </motion.div>
-                </motion.button>
-              </motion.div>
-            )}
                 </div>
         </motion.div>
       </div>

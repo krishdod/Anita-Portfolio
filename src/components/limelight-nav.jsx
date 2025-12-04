@@ -116,7 +116,7 @@ export const LimelightNav = ({
               cloneElement(icon, {
                 className: `w-4 h-4 transition-opacity duration-100 ease-in-out ${
                   isActive ? 'opacity-100' : 'opacity-40'
-                } ${icon.props.className || ''} ${iconClassName || ''}`,
+              } ${icon.props.className || ''} ${iconClassName || ''}`,
               })
             )}
             {/* Gradient underline for active item with spacing and shadow */}

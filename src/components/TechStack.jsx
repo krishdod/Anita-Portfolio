@@ -94,9 +94,7 @@ const TechStack = () => {
   }
 
   return (
-    <section id="tech-stack" className="section-padding bg-background scroll-mt-20 relative overflow-hidden" ref={ref}>
-      {/* Advanced Background */}
-      <div className="absolute inset-0 gradient-mesh opacity-30" />
+    <section id="tech-stack" className="section-padding bg-transparent scroll-mt-20 relative overflow-hidden" ref={ref}>
       <div className="container-width relative z-10">
         {/* Section Header */}
         <motion.div

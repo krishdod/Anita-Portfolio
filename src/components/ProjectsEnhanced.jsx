@@ -106,18 +106,7 @@ const ProjectsEnhanced = () => {
   ]
 
   return (
-    <section id="projects" className="relative section-padding bg-background overflow-hidden scroll-mt-20">
-      {/* Advanced Background Effects */}
-      <div className="absolute inset-0 gradient-mesh opacity-50" />
-      <SparklesCore
-        id="projectsparticles"
-        background="transparent"
-        minSize={0.5}
-        maxSize={1.2}
-        particleDensity={20}
-        className="w-full h-full absolute pointer-events-none opacity-40"
-        particleColor="100, 150, 255"
-      />
+    <section id="projects" className="relative section-padding bg-transparent overflow-hidden scroll-mt-20">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" ref={ref}>
         {/* Section Header */}
