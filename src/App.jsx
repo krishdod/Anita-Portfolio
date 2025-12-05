@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { SmoothCursor } from './components/effects/SmoothCursor'
 import { ScrollProgress } from './components/effects/ScrollProgress'
@@ -13,8 +14,9 @@ import Footer from './components/Footer'
 import ParticleIntro from './components/ParticleIntro'
 import { SparklesCore } from './components/ui/sparkles'
 import { BackgroundBeams } from './components/ui/background-beams'
+import AllProjects from './pages/AllProjects'
 
-function App() {
+function HomePage() {
   const [showIntro, setShowIntro] = useState(true)
   const [particleEffectComplete, setParticleEffectComplete] = useState(false)
 
@@ -127,17 +129,28 @@ function App() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <HeroEnhanced />
-            <About />
+        <HeroEnhanced />
+        <About />
             <TechStack />
-            <Work />
-            <ProjectsEnhanced />
-            <Contact />
+        <Work />
+        <ProjectsEnhanced />
+        <Contact />
           </motion.div>
         )}
       </main>
       <Footer />
     </div>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/all-work" element={<AllProjects />} />
+      </Routes>
+    </Router>
   )
 }
 

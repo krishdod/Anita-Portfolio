@@ -245,15 +245,15 @@
 }
 
   /* Advanced Glassmorphism utility */
-  .glass {
+.glass {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  }
+}
 
-  .dark .glass {
+.dark .glass {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
@@ -321,7 +321,7 @@
     mask-composite: exclude;
   
   border: 1px solid rgba(255, 255, 255, 0.1);
-  }
+}
 
 /* Hide scrollbar but keep functionality */
 .hide-scrollbar {

@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion, useSpring } from "framer-motion"
 
 export function SmoothCursor() {
   const cursorRef = useRef(null)
   const cursorDotRef = useRef(null)
+  const [isHoveringWorkCard, setIsHoveringWorkCard] = useState(false)
 
   const mouseX = useSpring(0, {
     stiffness: 500,
@@ -41,6 +42,11 @@ export function SmoothCursor() {
       mouseY.set(e.clientY)
       dotX.set(e.clientX)
       dotY.set(e.clientY)
+
+      // Check if hovering over a work card
+      const elementUnderCursor = document.elementFromPoint(e.clientX, e.clientY)
+      const workCard = elementUnderCursor?.closest('[data-work-card]')
+      setIsHoveringWorkCard(!!workCard)
     }
 
     const handleMouseDown = () => {
@@ -72,7 +78,7 @@ export function SmoothCursor() {
 
   return (
     <>
-      {/* Main cursor ring */}
+      {/* Main cursor ring - hide when hovering over work cards */}
       <motion.div
         ref={cursorRef}
         className="pointer-events-none fixed left-0 top-0 z-[9999] hidden md:block mix-blend-difference"
@@ -82,11 +88,13 @@ export function SmoothCursor() {
           translateX: "-50%",
           translateY: "-50%",
         }}
+        animate={{ opacity: isHoveringWorkCard ? 0 : 1 }}
+        transition={{ duration: 0.2 }}
       >
         <div className="h-6 w-6 rounded-full border-2 border-white transition-transform duration-200" />
       </motion.div>
 
-      {/* Inner dot */}
+      {/* Inner dot - hide when hovering over work cards */}
       <motion.div
         ref={cursorDotRef}
         className="pointer-events-none fixed left-0 top-0 z-[9999] hidden md:block mix-blend-difference"
@@ -96,6 +104,8 @@ export function SmoothCursor() {
           translateX: "-50%",
           translateY: "-50%",
         }}
+        animate={{ opacity: isHoveringWorkCard ? 0 : 1 }}
+        transition={{ duration: 0.2 }}
       >
         <div className="h-1.5 w-1.5 rounded-full bg-white transition-transform duration-200" />
       </motion.div>

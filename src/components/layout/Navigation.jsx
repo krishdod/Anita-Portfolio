@@ -13,7 +13,7 @@ const navLinks = [
   { name: 'Technical Skills', href: 'tech-stack', icon: Briefcase },
   
   { name: 'Experience', href: 'work', icon: Briefcase },
-  { name: 'Projects', href: 'projects', icon: FolderKanban },
+  { name: 'Work', href: 'portfolio', icon: FolderKanban },
   { name: 'Contact', href: 'contact', icon: Mail },
 ]
 
