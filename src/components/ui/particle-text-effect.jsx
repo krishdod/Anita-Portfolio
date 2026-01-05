@@ -213,12 +213,12 @@ export function ParticleTextEffect({
     const offscreenCtx = offscreenCanvas.getContext("2d")
 
     offscreenCtx.fillStyle = "white"
-    // Responsive font size calculation for mobile
+    // Responsive font size calculation for mobile - smaller on mobile
     const isMobile = displayWidth < 640
     const baseFontSize = isMobile 
-      ? Math.min(displayWidth / (word.length * 0.5), 60)
+      ? Math.min(displayWidth / (word.length * 0.65), 45) // Smaller multiplier and max size for mobile
       : Math.min(displayWidth / (word.length * 0.6), 120)
-    const fontSize = Math.max(baseFontSize, 32) // Minimum 32px for readability
+    const fontSize = Math.max(baseFontSize, 24) // Reduced minimum for mobile (was 32px)
     offscreenCtx.font = `bold ${fontSize * dpr}px Arial`
     offscreenCtx.textAlign = "center"
     offscreenCtx.textBaseline = "middle"
@@ -429,16 +429,23 @@ export function ParticleTextEffect({
 
     // Function to update canvas size responsively with proper DPR handling
     const updateCanvasSize = () => {
+      // Use the actual container/client dimensions for accurate sizing on mobile
       const container = canvas.parentElement
       let width, height
       
-      if (container) {
-        width = container.clientWidth || window.innerWidth
-        height = container.clientHeight || window.innerHeight
+      // Prefer container dimensions if available (more reliable on mobile)
+      if (container && container.clientWidth > 0 && container.clientHeight > 0) {
+        width = container.clientWidth
+        height = container.clientHeight
       } else {
-        width = window.innerWidth || 1200
-        height = window.innerHeight || 600
+        // Fallback to window dimensions
+        width = window.innerWidth || document.documentElement.clientWidth || 1200
+        height = window.innerHeight || document.documentElement.clientHeight || 600
       }
+
+      // Ensure minimum dimensions
+      if (width <= 0) width = window.innerWidth || 1200
+      if (height <= 0) height = window.innerHeight || 600
 
       // Set actual size in memory (scaled for device pixel ratio)
       canvas.width = width * dpr
@@ -456,29 +463,49 @@ export function ParticleTextEffect({
     // Set initial canvas size
     updateCanvasSize()
 
-    // Only initialize if not already completed
-    if (!hasCompletedRef.current && !isAnimatingRef.current) {
-      // Initialize with text
-      formText(text, canvas)
+    // On mobile, wait a tick to ensure viewport is stable
+    const initDelay = window.innerWidth < 768 ? 100 : 0
+    
+    const initAnimation = () => {
+      // Only initialize if not already completed
+      if (!hasCompletedRef.current && !isAnimatingRef.current) {
+        // Update canvas size one more time before starting (important for mobile)
+        updateCanvasSize()
+        
+        // Initialize with text
+        formText(text, canvas)
 
-      // Start animation
-      isAnimatingRef.current = true
-      animate()
+        // Start animation
+        isAnimatingRef.current = true
+        animate()
+      }
     }
 
-    // Handle window resize for responsive behavior
+    if (initDelay > 0) {
+      setTimeout(initAnimation, initDelay)
+    } else {
+      initAnimation()
+    }
+
+    // Handle window resize and orientation change for responsive behavior
     const handleResize = () => {
       // Don't re-form text if animation is already complete
       if (hasCompletedRef.current) return
       
-      updateCanvasSize()
-      // Only re-form text if animation hasn't completed
-      if (!hasCompletedRef.current) {
-        formText(text, canvas)
-      }
+      // Small delay on mobile to ensure viewport has stabilized
+      const delay = window.innerWidth < 768 ? 150 : 0
+      
+      setTimeout(() => {
+        updateCanvasSize()
+        // Only re-form text if animation hasn't completed
+        if (!hasCompletedRef.current) {
+          formText(text, canvas)
+        }
+      }, delay)
     }
 
     window.addEventListener('resize', handleResize)
+    window.addEventListener('orientationchange', handleResize)
 
     return () => {
       if (animationRef.current) {
@@ -487,6 +514,7 @@ export function ParticleTextEffect({
       }
       isAnimatingRef.current = false
       window.removeEventListener('resize', handleResize)
+      window.removeEventListener('orientationchange', handleResize)
     }
   }, [text, gradientClass]) // Removed onComplete from dependencies to prevent re-renders
 

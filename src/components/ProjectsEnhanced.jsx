@@ -16,7 +16,7 @@ import { CursorButton } from './effects/CursorButton'
 const ProjectsEnhanced = () => {
   const work = [
     {
-      id: '',
+      id: '01',
       title: 'ByNeil',
       shortTitle: 'ByNeil',
       description:
@@ -107,7 +107,7 @@ const ProjectsEnhanced = () => {
         'Luxury fashion brand built from scratch featuring premium collections, elegant design, and seamless shopping experience.',
       tags: ['Build From Scratch', 'Luxury', 'Premium'],
       link: 'https://fabricofsociety.luxury/',
-      image: '/projects/fabricofsociety.jpg',
+      image: '/projects/fabricofsociety.png',
       gradient: 'from-indigo-600 to-purple-600',
       device: 'desktop',
     },
@@ -119,7 +119,7 @@ const ProjectsEnhanced = () => {
         'Modern e-commerce platform with international shipping, multi-language support, and optimized user experience.',
       tags: ['International', 'Multi-Language', 'E-commerce'],
       link: 'https://e3k.shop/en-in',
-      image: '/projects/e3k.jpg',
+      image: '/projects/e3k.png',
       gradient: 'from-blue-500 to-cyan-500',
       device: 'laptop',
     },
@@ -131,7 +131,7 @@ const ProjectsEnhanced = () => {
         'Cruelty-free fashion bags with sustainability messaging and optimized product discovery.',
       tags: ['Sustainability', 'Fashion', 'Performance'],
       link: 'https://baggit.com/',
-      image: '/projects/baggit.jpg',
+      image: '/projects/baggit.png',
       gradient: 'from-indigo-500 to-blue-500',
       device: 'laptop',
     },
@@ -143,7 +143,7 @@ const ProjectsEnhanced = () => {
         'Multi-brand store with large inventory management, advanced search, and optimized mobile experience.',
       tags: ['Multi-Brand', 'Large Inventory', 'Mobile'],
       link: 'http://paragonfootwear.com/',
-      image: '/projects/paragon.jpg',
+      image: '/projects/paragon.png',
       gradient: 'from-green-500 to-emerald-500',
       device: 'desktop',
     },
@@ -155,7 +155,7 @@ const ProjectsEnhanced = () => {
         'Contemporary fashion brand with minimalist design, clean aesthetics, and seamless shopping experience.',
       tags: ['Fashion', 'Minimalist', 'Modern'],
       link: 'https://nude-project.com/',
-      image: '/projects/nude-project.jpg',
+      image: '/projects/nude-project.png',
       gradient: 'from-gray-700 to-gray-500',
       device: 'laptop',
     },

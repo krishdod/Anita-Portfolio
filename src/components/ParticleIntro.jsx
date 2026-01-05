@@ -32,8 +32,12 @@ const ParticleIntro = ({ onFinished }) => {
   }
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-black" aria-hidden="true">
-      <div className="w-full h-full max-w-6xl max-h-[600px] relative">
+    <div 
+      className="fixed inset-0 bg-black" 
+      style={{ width: '100vw', height: '100vh', minHeight: '-webkit-fill-available' }}
+      aria-hidden="true"
+    >
+      <div className="absolute inset-0 w-full h-full" style={{ width: '100%', height: '100%' }}>
         <ParticleTextEffect
           text={current.text}
           gradientClass={current.gradientClass}
