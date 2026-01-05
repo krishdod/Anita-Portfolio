@@ -345,8 +345,8 @@ export function ParticleTextEffect({
     const particles = particlesRef.current
     const dpr = window.devicePixelRatio || 1
 
-    // Clear with proper scaling
-    ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
+    // Clear with proper scaling - smoother fade for particle trails
+    ctx.fillStyle = "rgba(0, 0, 0, 0.08)" // Slightly more transparent for smoother trails
     ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr)
 
     let allReachedTarget = true

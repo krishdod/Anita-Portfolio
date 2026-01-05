@@ -14,6 +14,9 @@ import Footer from './components/Footer'
 import ParticleIntro from './components/ParticleIntro'
 import { SparklesCore } from './components/ui/sparkles'
 import { BackgroundBeams } from './components/ui/background-beams'
+import { AnimatedGrid } from './components/ui/animated-grid'
+import { AnimatedWaves } from './components/ui/animated-waves'
+import { FloatingShapes } from './components/ui/floating-shapes'
 import AllProjects from './pages/AllProjects'
 
 function HomePage() {
@@ -45,6 +48,15 @@ function HomePage() {
       <div className="fixed inset-0 -z-10">
         {/* Advanced Gradient Mesh Background */}
         <div className="absolute inset-0 gradient-mesh opacity-30 dark:opacity-60" />
+        
+        {/* Animated Grid Pattern */}
+        <AnimatedGrid className="opacity-30" />
+        
+        {/* Animated Waves */}
+        <AnimatedWaves className="opacity-40" />
+        
+        {/* Floating Shapes */}
+        <FloatingShapes className="opacity-50" />
         
         {/* Animated Background with Beams */}
         <BackgroundBeams className="opacity-50" />
@@ -105,14 +117,20 @@ function HomePage() {
       </div>
 
       {/* Full-screen particle intro overlay */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showIntro && (
           <motion.div
             key="intro"
             className="fixed inset-0 z-[999] bg-black"
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            exit={{ 
+              opacity: 0,
+              scale: 1.05,
+            }}
+            transition={{ 
+              duration: 1,
+              ease: [0.4, 0, 0.2, 1],
+            }}
           >
             <ParticleIntro onFinished={handleParticleComplete} />
           </motion.div>
@@ -125,9 +143,13 @@ function HomePage() {
       <main id="main-content" role="main" className="relative">
         {!showIntro && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              duration: 0.8, 
+              delay: 0.2,
+              ease: [0.4, 0, 0.2, 1]
+            }}
           >
         <HeroEnhanced />
         <About />

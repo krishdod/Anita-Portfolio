@@ -26,17 +26,18 @@ export function RevealOnScroll({
   const defaultVariants = {
     hidden: { 
       opacity: 0, 
-      y: 60,
-      scale: 0.95
+      y: 40,
+      scale: 0.96
     },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.8,
+        duration: 0.7,
         delay,
-        ease: [0.6, 0.01, 0.05, 0.95]
+        ease: [0.4, 0, 0.2, 1],
+        opacity: { duration: 0.5 }
       }
     }
   }

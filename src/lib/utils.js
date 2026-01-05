@@ -46,7 +46,7 @@ export function throttle(func, limit) {
 }
 
 /**
- * Smooth scroll to element
+ * Smooth scroll to element (works with Lenis smooth scroll)
  * @param {string} elementId - ID of element to scroll to
  * @param {number} offset - Offset from top in pixels (default: 80 for navbar)
  */
@@ -56,10 +56,20 @@ export function smoothScrollTo(elementId, offset = 80) {
     const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
     const offsetPosition = elementPosition - offset
 
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    })
+    // Check if Lenis is available
+    if (window.lenis) {
+      window.lenis.scrollTo(offsetPosition, {
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        offset: 0
+      })
+    } else {
+      // Fallback to native smooth scroll
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
   }
 }
 

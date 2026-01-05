@@ -123,8 +123,8 @@ const Work = () => {
                 variants={itemVariants}
                 className="relative pl-12 sm:pl-16 md:pl-20"
               >
-                {/* Timeline dot - centered on the vertical line */}
-                <div className="absolute top-6 w-3 -translate-x-1/2 left-[calc(1rem+0.5px)] sm:left-[calc(1.25rem+0.5px)] md:left-[calc(1.5rem+0.5px)]">
+                {/* Timeline dot - perfectly centered on the vertical line */}
+                <div className="absolute top-6 left-4 sm:left-5 md:left-6 -translate-x-1/2 z-10">
                   <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_0_6px_rgba(59,130,246,0.25)] border-2 border-background" />
                 </div>
 

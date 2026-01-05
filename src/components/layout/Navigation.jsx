@@ -39,32 +39,100 @@ export function Navigation() {
   useEffect(() => {
     const sections = navLinks.map(link => document.getElementById(link.href))
     
+    // Improved observer options - triggers when section enters viewport from top
     const observerOptions = {
       root: null,
-      rootMargin: '-50% 0px -50% 0px',
-      threshold: 0
+      rootMargin: '-100px 0px -60% 0px', // Trigger when section top is 100px from viewport top
+      threshold: [0, 0.1, 0.3, 0.5, 0.7, 1] // Multiple thresholds for better detection
     }
 
     const observer = new IntersectionObserver((entries) => {
       // Don't update if user just clicked a nav item
       if (isNavigating) return
       
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id)
-          const index = navLinks.findIndex(link => link.href === entry.target.id)
-          if (index !== -1) {
-            setActiveIndex(index)
-          }
+      // Find the section that's most visible in the viewport
+      const visibleSections = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => {
+          // Sort by intersection ratio (most visible first)
+          return b.intersectionRatio - a.intersectionRatio
+        })
+
+      if (visibleSections.length > 0) {
+        const mostVisible = visibleSections[0]
+        setActiveSection(mostVisible.target.id)
+        const index = navLinks.findIndex(link => link.href === mostVisible.target.id)
+        if (index !== -1) {
+          setActiveIndex(index)
         }
-      })
+      }
     }, observerOptions)
 
     sections.forEach(section => {
       if (section) observer.observe(section)
     })
 
-    return () => observer.disconnect()
+    // Fallback: Also check on scroll for better responsiveness
+    const handleScroll = () => {
+      if (isNavigating) return
+      
+      const scrollPosition = window.scrollY + 200 // Offset for navbar and some padding
+      
+      // Find which section is currently most visible in viewport
+      let currentSection = null
+      let maxVisibility = 0
+      
+      sections.forEach(section => {
+        if (section) {
+          const rect = section.getBoundingClientRect()
+          const sectionTop = rect.top + window.scrollY
+          const sectionBottom = sectionTop + rect.height
+          
+          // Check if section is in viewport
+          if (scrollPosition >= sectionTop - 150 && scrollPosition <= sectionBottom) {
+            // Calculate how much of the section is visible
+            const viewportTop = window.scrollY
+            const viewportBottom = window.scrollY + window.innerHeight
+            const visibleTop = Math.max(sectionTop, viewportTop)
+            const visibleBottom = Math.min(sectionBottom, viewportBottom)
+            const visibility = (visibleBottom - visibleTop) / rect.height
+            
+            if (visibility > maxVisibility) {
+              maxVisibility = visibility
+              currentSection = section
+            }
+          }
+        }
+      })
+      
+      if (currentSection) {
+        setActiveSection(currentSection.id)
+        const index = navLinks.findIndex(link => link.href === currentSection.id)
+        if (index !== -1) {
+          setActiveIndex(index)
+        }
+      }
+    }
+
+    // Throttled scroll handler
+    let ticking = false
+    const throttledScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll()
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+
+    window.addEventListener('scroll', throttledScroll, { passive: true })
+    handleScroll() // Initial check
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', throttledScroll)
+    }
   }, [isNavigating])
 
   const handleNavClick = (href, index) => {

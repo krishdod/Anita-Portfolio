@@ -5,6 +5,7 @@ import { FaCode, FaShoppingCart, FaCog } from 'react-icons/fa'
 import { GradientText } from './animated/GradientText'
 import { Card } from './ui/card'
 import ScrollReveal from './ScrollReveal'
+import { AutoScroll } from './ui/auto-scroll'
 
 const TechStack = () => {
   const [ref, inView] = useInView({
@@ -117,6 +118,45 @@ const TechStack = () => {
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto">
             Full-stack capabilities across the Shopify ecosystem and modern web technologies
           </p>
+        </motion.div>
+
+        {/* Auto-scrolling Technologies Marquee */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="mb-12 sm:mb-16 md:mb-20"
+        >
+          <div className="relative py-6 md:py-8 border-y border-border/50">
+            <AutoScroll
+              items={[
+                'Shopify',
+                'Shopify Plus',
+                'React',
+                'TypeScript',
+                'JavaScript',
+                'Liquid',
+                'PHP',
+                'MySQL',
+                'GraphQL',
+                'REST APIs',
+                'Tailwind CSS',
+                'Shopify Functions',
+                'Klaviyo',
+                'Git',
+                'Webpack',
+                'Node.js',
+                'Laravel',
+                'Vue.js',
+                'Next.js',
+                'Framer Motion',
+              ]}
+              direction="left"
+              speed={60}
+              showIcons={false}
+              className="py-3"
+            />
+          </div>
         </motion.div>
 
         {/* Tech Categories Grid */}
