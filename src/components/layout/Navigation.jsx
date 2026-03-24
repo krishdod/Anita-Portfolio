@@ -22,7 +22,8 @@ const socialLinks = [
 ]
 
 // Direct download link to CV in public folder
-const CV_DOWNLOAD_URL = '/ANITA_DANTANI_CV.pdf'
+const CV_PDF_FILE = 'Anita_Dantani_updated.pdf'
+const CV_DOWNLOAD_URL = `/${CV_PDF_FILE}`
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
