@@ -1,5 +1,5 @@
 import React from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import ParticleTextEffect from './ui/particle-text-effect'
 
 const SEQUENCE = [
@@ -17,11 +17,8 @@ const ParticleIntro = ({ onFinished }) => {
 
   React.useEffect(() => {
     if (isComplete && onFinished) {
-      // Wait 1 second after text forms, then fade out
-      const timer = setTimeout(() => {
-        onFinished()
-      }, 1000)
-      return () => clearTimeout(timer)
+      // ParticleTextEffect considers the formation complete; proceed immediately.
+      onFinished()
     }
   }, [isComplete, onFinished])
 

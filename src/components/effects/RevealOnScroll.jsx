@@ -24,22 +24,23 @@ export function RevealOnScroll({
   })
 
   const defaultVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 40,
-      scale: 0.96
+    hidden: {
+      opacity: 0,
+      y: 36,
+      scale: 0.97,
     },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.7,
         delay,
-        ease: [0.4, 0, 0.2, 1],
-        opacity: { duration: 0.5 }
-      }
-    }
+        type: 'spring',
+        stiffness: 360,
+        damping: 30,
+        mass: 0.82,
+      },
+    },
   }
 
   return (

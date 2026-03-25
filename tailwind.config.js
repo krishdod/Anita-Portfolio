@@ -58,9 +58,10 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['Manrope', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
-        display: ['Space Grotesk', 'Syne', 'system-ui', 'sans-serif'],
-        heading: ['Space Grotesk', 'Syne', 'system-ui', 'sans-serif'],
+        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+        display: ['Sora', 'system-ui', 'sans-serif'],
+        heading: ['Sora', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       fontSize: {
         '10xl': ['10rem', { lineHeight: '1' }],
@@ -81,6 +82,9 @@ export default {
         'fade-in': 'fade-in 0.5s ease-out',
         'fade-in-up': 'fade-in-up 0.5s ease-out',
         'scale-in': 'scale-in 0.5s ease-out',
+        'mesh-drift': 'mesh-drift 22s ease-in-out infinite alternate',
+        'aurora-shift': 'aurora-shift 18s ease-in-out infinite alternate',
+        'border-flow': 'border-flow 6s linear infinite',
       },
       keyframes: {
         float: {
@@ -106,6 +110,19 @@ export default {
         'scale-in': {
           '0%': { opacity: '0', transform: 'scale(0.95)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        'mesh-drift': {
+          '0%': { transform: 'scale(1) translate3d(0, 0, 0)' },
+          '50%': { transform: 'scale(1.06) translate3d(2%, -1.5%, 0)' },
+          '100%': { transform: 'scale(1.03) translate3d(-1%, 1%, 0)' },
+        },
+        'aurora-shift': {
+          '0%': { backgroundPosition: '0% 50%', opacity: '0.45' },
+          '100%': { backgroundPosition: '100% 40%', opacity: '0.65' },
+        },
+        'border-flow': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '100%': { backgroundPosition: '200% 50%' },
         },
       },
       backgroundImage: {

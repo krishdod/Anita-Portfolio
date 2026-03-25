@@ -114,7 +114,8 @@ const Work = () => {
           className="relative"
         >
           {/* Vertical line */}
-          <div className="absolute left-4 sm:left-5 md:left-6 top-0 bottom-0 w-px bg-border/40 pointer-events-none" />
+          {/* Timeline line must align with dots inside the `px-4` wrapper */}
+          <div className="absolute left-8 sm:left-9 md:left-10 top-0 bottom-0 w-px bg-border/40 pointer-events-none" />
 
           <div className="space-y-8 sm:space-y-10 md:space-y-12 px-4">
             {experiences.map((exp, index) => (

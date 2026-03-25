@@ -33,7 +33,7 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-gradient-to-b from-background to-muted/20 border-t border-border py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+    <footer className="bg-gradient-to-b from-background to-muted/20 border-t border-border py-12 sm:py-16 md:py-20">
       <div className="container-width">
         <motion.div
           variants={containerVariants}

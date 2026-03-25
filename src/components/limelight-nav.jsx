@@ -98,10 +98,11 @@ export const LimelightNav = ({
         const isTextLabel = typeof icon === 'object' && icon.type === 'span'
         const isActive = activeIndex === index
         return (
-          <a
+          <button
             key={id}
+            type="button"
             ref={el => (navItemRefs.current[index] = el)}
-            className={`relative z-20 flex h-full cursor-pointer items-center justify-center px-3 ${iconContainerClassName}`}
+            className={`relative z-20 flex h-full items-center justify-center px-3 ${iconContainerClassName}`}
             onClick={() => handleItemClick(index, onClick)}
             aria-label={label}>
             {isTextLabel ? (
@@ -123,7 +124,7 @@ export const LimelightNav = ({
             {isActive && (
               <div className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-[calc(100%-12px)] h-[2.5px] rounded-full ${limelightClassName} shadow-[0_2px_12px_rgba(59,130,246,0.8),0_0_20px_rgba(147,51,234,0.4)]`} />
             )}
-          </a>
+          </button>
         )
       })}
     </nav>

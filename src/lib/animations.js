@@ -12,43 +12,39 @@ const EASING = {
   spring: [0.68, -0.55, 0.265, 1.55],
 }
 
-// Fade animations with smoother transitions
+const SPRING_SOFT = { type: 'spring', stiffness: 380, damping: 28, mass: 0.85 }
+const SPRING_SNAPPY = { type: 'spring', stiffness: 420, damping: 32, mass: 0.78 }
+
+// Fade animations with spring easing (modern, less “template”)
 export const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 32 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { 
-      duration: 0.7, 
-      ease: EASING.smoothOut,
-      opacity: { duration: 0.5 }
-    }
-  }
+    transition: SPRING_SOFT,
+  },
 }
 
-// Stagger animations with smoother timing
+// Stagger: quicker cascade + spring children
 export const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.05,
-      ease: EASING.smooth
-    }
-  }
+      staggerChildren: 0.055,
+      delayChildren: 0.04,
+      when: 'beforeChildren',
+    },
+  },
 }
 
 export const staggerItem = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 26 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { 
-      duration: 0.6,
-      ease: EASING.smoothOut
-    }
-  }
+    transition: SPRING_SNAPPY,
+  },
 }
 
 // Smooth fade in
@@ -65,15 +61,12 @@ export const fadeIn = {
 
 // Smooth scale in
 export const scaleIn = {
-  hidden: { opacity: 0, scale: 0.95 },
+  hidden: { opacity: 0, scale: 0.94 },
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { 
-      duration: 0.5,
-      ease: EASING.smoothOut
-    }
-  }
+    transition: { type: 'spring', stiffness: 340, damping: 26 },
+  },
 }
 
 // Smooth slide in from left

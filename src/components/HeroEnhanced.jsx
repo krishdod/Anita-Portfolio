@@ -1,5 +1,5 @@
 import React from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Code2, Award, Users, Briefcase, Trophy } from 'lucide-react'
 import { GradientText } from './animated/GradientText'
 import { Card } from './ui/card'
@@ -27,12 +27,12 @@ const HeroEnhanced = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-transparent pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-6 sm:pb-8 md:pb-10">
 
-      <div className="container-width w-full relative z-10 px-4 sm:px-6 lg:px-8">
+      <div className="container-width w-full relative z-10">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="max-w-6xl mx-auto"
+          className="w-full"
         >
           {/* Badge with Glow */}
           <motion.div variants={staggerItem} className="mb-6 sm:mb-8">
@@ -65,74 +65,94 @@ const HeroEnhanced = () => {
               >
                 <Sparkles size={18} className="text-blue-600 dark:text-blue-400" />
               </motion.div>
-              <span className="text-xs sm:text-sm md:text-base font-semibold text-blue-700 dark:text-white tracking-wide">Open to Full-Time & Freelance</span>
+              <span className="text-xs sm:text-sm md:text-base font-semibold text-blue-700 dark:text-white tracking-wide font-sans">Open to Full-Time & Freelance</span>
             </motion.div>
           </motion.div>
 
-          {/* Main Heading with Enhanced Gradient */}
-          <motion.div variants={staggerItem} className="mb-6 sm:mb-8">
-            <h1 className="leading-[0.9] tracking-tighter text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[10rem] font-black">
-              <motion.span 
-                className="block mb-2 sm:mb-3 md:mb-4 text-foreground/90 dark:text-white/90 font-light tracking-normal text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-              >
-                Hi, I'm
-              </motion.span>
-              <motion.span
-                className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-glow"
-                style={{
-                  backgroundSize: '200% auto',
-                  filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))',
-                }}
-                animate={{
-                  backgroundPosition: ['0% center', '200% center'],
-                  filter: [
-                    'drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))',
-                    'drop-shadow(0 0 30px rgba(147, 51, 234, 0.6))',
-                    'drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))',
-                  ],
-                }}
-                transition={{
-                  backgroundPosition: { duration: 8, repeat: Infinity, ease: 'linear' },
-                  filter: { duration: 3, repeat: Infinity },
-                }}
-              >
-                Anita Dantani
-              </motion.span>
-            </h1>
+          {/* Editorial hero: mono kicker + spine + outline first name / staggered conic surname */}
+          <motion.div variants={staggerItem} className="mb-8 sm:mb-10 md:mb-12">
+            <div className="flex gap-4 sm:gap-6 md:gap-8 items-stretch max-w-[min(100%,68rem)]">
+              <motion.div
+                aria-hidden
+                className="w-1 sm:w-1.5 shrink-0 rounded-full bg-gradient-to-b from-cyan-400 via-violet-500 to-fuchsia-500"
+                initial={{ scaleY: 0, opacity: 0 }}
+                animate={{ scaleY: 1, opacity: 0.92 }}
+                transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                style={{ transformOrigin: 'center top' }}
+              />
+              <div className="min-w-0 flex-1">
+                <p className="font-mono text-[10px] sm:text-xs tracking-[0.32em] uppercase text-muted-foreground mb-4 sm:mb-5 max-w-md leading-relaxed">
+                  Shopify · Full stack · E‑commerce PM
+                </p>
+                <h1
+                  className="font-heading font-black leading-[0.92] tracking-tight"
+                  aria-label="Anita Dantani"
+                >
+                  <motion.span
+                    className="block mb-3 sm:mb-4 text-foreground/80 dark:text-white/80 font-sans font-light tracking-normal text-3xl sm:text-4xl md:text-5xl"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.06 }}
+                  >
+                    Hi, I'm
+                  </motion.span>
+                  <span className="block select-none">
+                    <motion.span
+                      className="hero-name-stroke block text-[clamp(2.6rem,7.5vw,6.5rem)] lg:text-[clamp(3rem,8vw,7.75rem)] font-light tracking-[-0.07em] leading-none"
+                      initial={{ opacity: 0, x: -32 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 240,
+                        damping: 30,
+                        delay: 0.1,
+                      }}
+                    >
+                      Anita
+                    </motion.span>
+                    <motion.span
+                      className="hero-title-conic block pl-[min(10vw,6.5rem)] text-[clamp(3rem,10.5vw,9.5rem)] leading-[0.88] tracking-[-0.08em] mt-1 sm:mt-2"
+                      initial={{ opacity: 0, clipPath: 'inset(0 100% 0 0)' }}
+                      animate={{ opacity: 1, clipPath: 'inset(0 0% 0 0)' }}
+                      transition={{
+                        opacity: { duration: 0.35, delay: 0.18 },
+                        clipPath: {
+                          duration: 0.95,
+                          ease: [0.22, 1, 0.36, 1],
+                          delay: 0.2,
+                        },
+                      }}
+                    >
+                      Dantani
+                    </motion.span>
+                  </span>
+                </h1>
+              </div>
+            </div>
           </motion.div>
 
           {/* Animated Role with Text Generate Effect */}
           <motion.div variants={staggerItem} className="mb-8 sm:mb-10">
-            <div className="flex items-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-light text-foreground/80 dark:text-gray-200">
-              <span className="font-extralight">I</span>
-              <motion.div
-                key={currentWord}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -30, scale: 0.9 }}
-                transition={{ 
-                  duration: 0.6,
-                  type: 'spring',
-                  stiffness: 150,
-                }}
-                className="min-w-[150px] sm:min-w-[200px] md:min-w-[250px] lg:min-w-[300px] xl:min-w-[350px]"
-              >
-                <motion.span
-                  className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400"
-                  animate={{
-                    scale: [1, 1.05, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                  }}
-                >
-                  {words[currentWord]}
-                </motion.span>
-              </motion.div>
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-light font-sans text-foreground/80 dark:text-gray-200">
+              <span className="font-extralight tracking-tight">I</span>
+              <span className="inline-block min-w-[150px] sm:min-w-[200px] md:min-w-[250px] lg:min-w-[300px] xl:min-w-[350px]">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span
+                    key={currentWord}
+                    initial={{ opacity: 0, y: 22 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -14 }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 420,
+                      damping: 34,
+                    }}
+                    className="font-heading font-bold inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-violet-400 to-fuchsia-400 bg-[length:200%_auto] motion-safe:animate-gradient motion-reduce:animate-none"
+                  >
+                    {words[currentWord]}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
             </div>
           </motion.div>
 

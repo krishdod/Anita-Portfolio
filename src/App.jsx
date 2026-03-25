@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { SmoothCursor } from './components/effects/SmoothCursor'
 import { ScrollProgress } from './components/effects/ScrollProgress'
@@ -18,10 +18,14 @@ import { AnimatedGrid } from './components/ui/animated-grid'
 import { AnimatedWaves } from './components/ui/animated-waves'
 import { FloatingShapes } from './components/ui/floating-shapes'
 import AllProjects from './pages/AllProjects'
+import { smoothScrollTo } from './lib/utils'
 
 function HomePage() {
+  const location = useLocation()
+  const navigate = useNavigate()
   const [showIntro, setShowIntro] = useState(true)
   const [particleEffectComplete, setParticleEffectComplete] = useState(false)
+  const [scrollLocked, setScrollLocked] = useState(true)
 
   // Hide intro after a fallback delay if particle effect doesn't complete
   useEffect(() => {
@@ -30,24 +34,57 @@ function HomePage() {
       if (!particleEffectComplete) {
         setShowIntro(false)
       }
-    }, 5000) // Increased fallback timeout
+    }, 20000) // Fallback safety (avoids getting stuck)
     return () => clearTimeout(timer)
   }, [showIntro, particleEffectComplete])
 
   const handleParticleComplete = () => {
     setParticleEffectComplete(true)
-    // Wait for particle effect to fully complete, then hide intro
-    setTimeout(() => {
-      setShowIntro(false)
-    }, 1000) // 1 second after particle effect completes
+    // Hide intro; scrolling unlock happens after the exit animation completes.
+    setShowIntro(false)
+    // Unlock immediately after intro is requested to close (exit opacity is ~instant).
+    setScrollLocked(false)
   }
+
+  // From /all-work "Start a project": scroll to contact once main content is mounted
+  useEffect(() => {
+    if (!location.state?.scrollToContact || showIntro) return
+    const id = window.setTimeout(() => {
+      smoothScrollTo('contact', 80)
+      navigate('/', { replace: true, state: {} })
+    }, 150)
+    return () => clearTimeout(id)
+  }, [location.state, showIntro, navigate])
+
+  // Lock scrolling during the intro overlay.
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow
+    if (scrollLocked) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = prevOverflow || ''
+    }
+
+    return () => {
+      document.body.style.overflow = prevOverflow
+    }
+  }, [scrollLocked])
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
+      <div className="page-texture" aria-hidden />
       {/* Global Background - Spans entire page */}
       <div className="fixed inset-0 -z-10">
         {/* Advanced Gradient Mesh Background */}
-        <div className="absolute inset-0 gradient-mesh opacity-30 dark:opacity-60" />
+        <div className="absolute inset-0 gradient-mesh opacity-30 dark:opacity-60 animate-mesh-drift motion-reduce:animate-none [transform:translateZ(0)]" />
+        <div
+          className="pointer-events-none absolute inset-0 motion-reduce:animate-none animate-aurora-shift opacity-20 dark:opacity-30 mix-blend-screen dark:mix-blend-plus-lighter"
+          style={{
+            background:
+              'linear-gradient(118deg, rgba(59,130,246,0.45) 0%, rgba(139,92,246,0.38) 38%, rgba(244,114,182,0.32) 68%, rgba(34,211,238,0.28) 100%)',
+            backgroundSize: '200% 200%',
+          }}
+        />
         
         {/* Animated Grid Pattern */}
         <AnimatedGrid className="opacity-30" />
@@ -123,14 +160,8 @@ function HomePage() {
             key="intro"
             className="fixed inset-0 z-[999] bg-black"
             initial={{ opacity: 1 }}
-            exit={{ 
-              opacity: 0,
-              scale: 1.05,
-            }}
-            transition={{ 
-              duration: 1,
-              ease: [0.4, 0, 0.2, 1],
-            }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.01 }}
           >
             <ParticleIntro onFinished={handleParticleComplete} />
           </motion.div>
@@ -143,12 +174,10 @@ function HomePage() {
       <main id="main-content" role="main" className="relative">
         {!showIntro && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.8, 
-              delay: 0.2,
-              ease: [0.4, 0, 0.2, 1]
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 0.01,
             }}
           >
         <HeroEnhanced />

@@ -10,7 +10,7 @@ import { useRef, useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { HiArrowUpRight } from 'react-icons/hi2'
 import { HiExternalLink } from 'react-icons/hi'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import ScrollReveal from '../components/ScrollReveal'
 import { Navigation } from '../components/layout/Navigation'
 import Footer from '../components/Footer'
@@ -371,7 +371,7 @@ const AllProjects = () => {
         </motion.div>
 
         <div
-          className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+          className="w-full max-w-[min(100%-1.25rem,1520px)] mx-auto px-3 sm:px-4 md:px-5 lg:px-6 relative z-10"
           ref={refInView}
         >
           {/* Top row: back button + label/meta */}
@@ -466,9 +466,9 @@ const AllProjects = () => {
                 </div>
 
                 <div className="flex flex-col items-start md:items-end gap-3 sm:gap-4">
-                  <Link to="/contact">
                     <motion.button
                       type="button"
+                      onClick={() => navigate('/', { state: { scrollToContact: true } })}
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.96 }}
                       className="inline-flex items-center gap-2 rounded-full bg-white text-black px-6 sm:px-8 py-3.5 text-sm sm:text-base font-semibold shadow-lg shadow-black/40"
@@ -476,7 +476,6 @@ const AllProjects = () => {
                       Start a project
                       <HiArrowUpRight size={18} />
                     </motion.button>
-                  </Link>
                   <motion.a
                     href="https://www.linkedin.com/in/anita-dantani/"
                     target="_blank"

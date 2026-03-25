@@ -4,28 +4,34 @@
 
 @layer base {
   :root {
-    /* Light mode colors - rich, cool light theme */
-    --background: 220 40% 92%;
-    /* Darker text for stronger contrast in light mode */
-    --foreground: 222.2 42% 10%;
+    /* Light mode palette (modern “mint + indigo + rose”) */
+    --background: 210 40% 97%;
+    --foreground: 222.2 32% 12%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 47.4% 11.2%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 47.4% 11.2%;
-    --primary: 221.2 83.2% 45%;
+    --primary: 176 86% 42%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 30% 92%;
+    --secondary: 210 28% 90%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 30% 93%;
-    --muted-foreground: 215.4 20% 35%;
-    --accent: 222 84% 56%;
+    --muted: 210 22% 94%;
+    --muted-foreground: 215.4 16% 36%;
+    --accent: 252 85% 64%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 72% 45%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 85%;
-    --input: 214.3 31.8% 85%;
-    --ring: 221.2 83.2% 45%;
+    --border: 216 18% 86%;
+    --input: 216 18% 86%;
+    --ring: 176 86% 42%;
     --radius: 0.5rem;
+
+    /* Hero conic colors for LIGHT mode */
+    --hero-conic-1: #34d399;
+    --hero-conic-2: #60a5fa;
+    --hero-conic-3: #8b5cf6;
+    --hero-conic-4: #f472b6;
+    --hero-conic-5: #22c55e;
   }
 
   .dark {
@@ -49,6 +55,13 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
+
+    /* Keep original DARK hero conic colors */
+    --hero-conic-1: #22d3ee;
+    --hero-conic-2: #6366f1;
+    --hero-conic-3: #a855f7;
+    --hero-conic-4: #ec4899;
+    --hero-conic-5: #2dd4bf;
   }
 
   * {
@@ -56,19 +69,18 @@
   }
   
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    @apply bg-background text-foreground font-sans;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: 'liga' 1, 'calt' 1;
-    letter-spacing: -0.01em;
+    font-feature-settings: 'liga' 1, 'calt' 1, 'ss01' 1;
+    letter-spacing: -0.015em;
   }
 
   /* Enhanced typography for headings */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', 'Syne', system-ui, sans-serif;
+    font-family: 'Sora', system-ui, sans-serif;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.045em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -123,19 +135,20 @@
   }
 
   .section-padding {
-    @apply py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 px-4 sm:px-6 lg:px-8;
+    @apply py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 px-3 sm:px-4 md:px-5 lg:px-6;
   }
 
   .section-padding-sm {
-    @apply py-6 sm:py-8 md:py-10 lg:py-12 px-4 sm:px-6 lg:px-8;
+    @apply py-6 sm:py-8 md:py-10 lg:py-12 px-3 sm:px-4 md:px-5 lg:px-6;
   }
 
+  /* Wide edge-to-edge feel: cap width but use more of the viewport */
   .container-width {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply w-full max-w-[min(100%-1.25rem,1520px)] mx-auto px-3 sm:px-4 md:px-5 lg:px-6;
   }
 
   .container-width-lg {
-    @apply max-w-screen-2xl mx-auto;
+    @apply max-w-[min(100%-1.25rem,1680px)] mx-auto px-3 sm:px-4 md:px-5 lg:px-6;
   }
 
   .text-balance {
@@ -144,23 +157,35 @@
 
   /* Enhanced Typography Scale */
   .text-display {
-    @apply text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter leading-none;
-    font-family: 'Space Grotesk', 'Syne', system-ui, sans-serif;
+    @apply text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extrabold tracking-tighter leading-[0.95] font-heading;
   }
 
   .text-heading {
-    @apply text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-tight;
-    font-family: 'Space Grotesk', 'Syne', system-ui, sans-serif;
+    @apply text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-tight font-heading;
   }
 
   .text-subheading {
-    @apply text-2xl md:text-3xl lg:text-4xl font-semibold leading-snug;
-    font-family: 'Space Grotesk', 'Syne', system-ui, sans-serif;
+    @apply text-2xl md:text-3xl lg:text-4xl font-semibold leading-snug font-heading;
   }
 
   .text-body-lg {
-    @apply text-xl md:text-2xl lg:text-3xl font-light leading-relaxed;
-    font-family: 'Manrope', system-ui, sans-serif;
+    @apply text-xl md:text-2xl lg:text-3xl font-normal leading-relaxed font-sans;
+  }
+
+  /* Soft film grain + vignette for depth (respects reduced motion) */
+  .page-texture {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  .dark .page-texture {
+    opacity: 0.07;
+    mix-blend-mode: soft-light;
   }
 
   /* Smooth Transitions */
@@ -178,14 +203,6 @@
   .transition-bounce {
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     will-change: transform, opacity;
-  }
-
-  /* Optimized section transitions for smooth scrolling */
-  section {
-    will-change: transform, opacity;
-    transform: translateZ(0); /* GPU acceleration */
-    backface-visibility: hidden;
-    perspective: 1000px;
   }
 
   /* Smooth hover effects */
@@ -252,18 +269,16 @@
     line-height: 1.1;
   }
 
-  /* Responsive container improvements */
-  @media (max-width: 640px) {
-    .container-width {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-  }
-
   /* Turn off transitions for reduced-motion users */
   .reduce-motion * {
     transition: none !important;
     animation: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-texture {
+      display: none;
+    }
   }
 }
 
@@ -328,10 +343,10 @@
   /* Advanced gradient backgrounds */
   .gradient-mesh {
     background: 
-      radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.40) 0px, transparent 55%),
-      radial-gradient(at 100% 0%, rgba(147, 51, 234, 0.38) 0px, transparent 55%),
-      radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.38) 0px, transparent 55%),
-      radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.36) 0px, transparent 55%);
+      radial-gradient(at 0% 0%, rgba(52, 211, 153, 0.34) 0px, transparent 55%),
+      radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.30) 0px, transparent 55%),
+      radial-gradient(at 100% 100%, rgba(244, 114, 182, 0.26) 0px, transparent 55%),
+      radial-gradient(at 0% 100%, rgba(96, 165, 250, 0.28) 0px, transparent 55%);
   }
 
   .dark .gradient-mesh {
@@ -404,5 +419,58 @@
   }
   100% {
     transform: translate3d(-3%, 4%, 0) scale(1.02);
+  }
+}
+
+/* Hero: hollow first name + rotating conic surname (editorial, not “template” gradients) */
+@property --hero-conic-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes hero-conic-rotate {
+  to {
+    --hero-conic-angle: 360deg;
+  }
+}
+
+.hero-name-stroke {
+  color: transparent;
+  -webkit-text-stroke-width: 1.5px;
+  -webkit-text-stroke-color: hsl(var(--foreground) / 0.4);
+}
+
+.dark .hero-name-stroke {
+  -webkit-text-stroke-color: hsl(210 40% 98% / 0.52);
+}
+
+.hero-title-conic {
+  background: conic-gradient(
+    from var(--hero-conic-angle),
+    var(--hero-conic-1) 0deg,
+    var(--hero-conic-2) 80deg,
+    var(--hero-conic-3) 160deg,
+    var(--hero-conic-4) 240deg,
+    var(--hero-conic-5) 320deg,
+    var(--hero-conic-1) 360deg
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-title-conic {
+    animation: hero-conic-rotate 18s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title-conic {
+    background: linear-gradient(115deg, #22d3ee, #818cf8, #c084fc, #f472b6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: none;
   }
 }

@@ -387,7 +387,7 @@ const ProjectsEnhanced = () => {
       </motion.div>
 
       <div
-        className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+        className="w-full max-w-[min(100%-1.25rem,1600px)] mx-auto px-3 sm:px-4 md:px-5 lg:px-6 relative z-10"
         ref={refInView}
         style={{ position: 'relative' }}
       >

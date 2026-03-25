@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Moon, Sun, Linkedin, Home, User, Briefcase, FolderKanban, Mail } from 'lucide-react'
 import { LimelightNav } from '../limelight-nav'
 import { useTheme } from '../../hooks/useTheme'
-import { useScrollPosition } from '../../hooks/useScrollPosition'
 import { useIsMobile } from '../../hooks/useMediaQuery'
 import { smoothScrollTo } from '../../lib/utils'
 
@@ -31,10 +30,16 @@ export function Navigation() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isNavigating, setIsNavigating] = useState(false)
   const { theme, toggleTheme, isDark } = useTheme()
-  const { scrollY } = useScrollPosition()
   const isMobile = useIsMobile()
+  const [isScrolled, setIsScrolled] = useState(false)
 
-  const isScrolled = scrollY > 50
+  // Scroll-reactive nav background (modern “glass” header behavior)
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   // Update active section based on scroll
   useEffect(() => {
@@ -167,12 +172,14 @@ export function Navigation() {
   return (
     <>
       <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 bg-transparent py-4 transition-all duration-300"
+        className={`fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300 ${
+          isScrolled ? 'bg-background/70 backdrop-blur-xl border-b border-border/40 shadow-sm' : 'bg-transparent'
+        }`}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.6, 0.01, 0.05, 0.95] }}
       >
-        <div className="container-width px-4 sm:px-6 lg:px-8">
+        <div className="container-width">
           <div className="flex items-center justify-between relative">
             {/* Spacer for left side to center nav */}
             <div className="hidden md:block flex-1"></div>

@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { SiShopify, SiReact, SiTypescript, SiJavascript, SiTailwindcss, SiPhp, SiMysql, SiGit, SiWebpack } from 'react-icons/si'
 import { FaCode, FaShoppingCart, FaCog } from 'react-icons/fa'
 import { GradientText } from './animated/GradientText'
 import { Card } from './ui/card'

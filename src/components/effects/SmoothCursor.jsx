@@ -78,10 +78,10 @@ export function SmoothCursor() {
 
   return (
     <>
-      {/* Main cursor ring - hide when hovering over work cards */}
+      {/* Glass ring — avoid mix-blend-difference (inverts gradient text → green artifacts) */}
       <motion.div
         ref={cursorRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] hidden md:block mix-blend-difference"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] hidden md:block"
         style={{
           x: mouseX,
           y: mouseY,
@@ -91,13 +91,12 @@ export function SmoothCursor() {
         animate={{ opacity: isHoveringWorkCard ? 0 : 1 }}
         transition={{ duration: 0.2 }}
       >
-        <div className="h-6 w-6 rounded-full border-2 border-white transition-transform duration-200" />
+        <div className="h-8 w-8 rounded-full border border-foreground/15 bg-background/35 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.12)] transition-transform duration-200 dark:border-white/25 dark:bg-white/[0.08] dark:shadow-[0_4px_28px_rgba(0,0,0,0.45)]" />
       </motion.div>
 
-      {/* Inner dot - hide when hovering over work cards */}
       <motion.div
         ref={cursorDotRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] hidden md:block mix-blend-difference"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] hidden md:block"
         style={{
           x: dotX,
           y: dotY,
@@ -107,7 +106,7 @@ export function SmoothCursor() {
         animate={{ opacity: isHoveringWorkCard ? 0 : 1 }}
         transition={{ duration: 0.2 }}
       >
-        <div className="h-1.5 w-1.5 rounded-full bg-white transition-transform duration-200" />
+        <div className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_12px_hsl(var(--primary))] transition-transform duration-200" />
       </motion.div>
     </>
   )
