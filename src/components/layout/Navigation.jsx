@@ -43,57 +43,66 @@ export function Navigation() {
 
   // Update active section based on scroll
   useEffect(() => {
-    const sections = navLinks.map(link => document.getElementById(link.href))
-    
-    // Improved observer options - triggers when section enters viewport from top
-    const observerOptions = {
-      root: null,
-      rootMargin: '-100px 0px -60% 0px', // Trigger when section top is 100px from viewport top
-      threshold: [0, 0.1, 0.3, 0.5, 0.7, 1] // Multiple thresholds for better detection
-    }
+    let retryTimer = null
+    let scrollCleanup = null
+    let observer = null
 
-    const observer = new IntersectionObserver((entries) => {
-      // Don't update if user just clicked a nav item
-      if (isNavigating) return
-      
-      // Find the section that's most visible in the viewport
-      const visibleSections = entries
-        .filter(entry => entry.isIntersecting)
-        .sort((a, b) => {
-          // Sort by intersection ratio (most visible first)
-          return b.intersectionRatio - a.intersectionRatio
-        })
+    const attachObservers = () => {
+      const sections = navLinks.map((link) => document.getElementById(link.href))
 
-      if (visibleSections.length > 0) {
-        const mostVisible = visibleSections[0]
-        setActiveSection(mostVisible.target.id)
-        const index = navLinks.findIndex(link => link.href === mostVisible.target.id)
-        if (index !== -1) {
-          setActiveIndex(index)
-        }
+      // Sections mount after the intro overlay; if they aren't in the DOM yet, retry.
+      const hasMissing = sections.some((s) => !s)
+      if (hasMissing) {
+        retryTimer = window.setTimeout(attachObservers, 200)
+        return
       }
-    }, observerOptions)
+    
+      // Improved observer options - triggers when section enters viewport from top
+      const observerOptions = {
+        root: null,
+        rootMargin: '-100px 0px -60% 0px', // Trigger when section top is 100px from viewport top
+        threshold: [0, 0.1, 0.3, 0.5, 0.7, 1], // Multiple thresholds for better detection
+      }
 
-    sections.forEach(section => {
-      if (section) observer.observe(section)
-    })
+      observer = new IntersectionObserver((entries) => {
+        // Don't update if user just clicked a nav item
+        if (isNavigating) return
 
-    // Fallback: Also check on scroll for better responsiveness
-    const handleScroll = () => {
-      if (isNavigating) return
-      
-      const scrollPosition = window.scrollY + 200 // Offset for navbar and some padding
-      
-      // Find which section is currently most visible in viewport
-      let currentSection = null
-      let maxVisibility = 0
-      
-      sections.forEach(section => {
-        if (section) {
+        // Find the section that's most visible in the viewport
+        const visibleSections = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => {
+            // Sort by intersection ratio (most visible first)
+            return b.intersectionRatio - a.intersectionRatio
+          })
+
+        if (visibleSections.length > 0) {
+          const mostVisible = visibleSections[0]
+          setActiveSection(mostVisible.target.id)
+          const index = navLinks.findIndex((link) => link.href === mostVisible.target.id)
+          if (index !== -1) {
+            setActiveIndex(index)
+          }
+        }
+      }, observerOptions)
+
+      sections.forEach((section) => observer.observe(section))
+
+      // Fallback: Also check on scroll for better responsiveness
+      const handleScroll = () => {
+        if (isNavigating) return
+
+        const scrollPosition = window.scrollY + 200 // Offset for navbar and some padding
+
+        // Find which section is currently most visible in viewport
+        let currentSection = null
+        let maxVisibility = 0
+
+        sections.forEach((section) => {
           const rect = section.getBoundingClientRect()
           const sectionTop = rect.top + window.scrollY
           const sectionBottom = sectionTop + rect.height
-          
+
           // Check if section is in viewport
           if (scrollPosition >= sectionTop - 150 && scrollPosition <= sectionBottom) {
             // Calculate how much of the section is visible
@@ -102,42 +111,47 @@ export function Navigation() {
             const visibleTop = Math.max(sectionTop, viewportTop)
             const visibleBottom = Math.min(sectionBottom, viewportBottom)
             const visibility = (visibleBottom - visibleTop) / rect.height
-            
+
             if (visibility > maxVisibility) {
               maxVisibility = visibility
               currentSection = section
             }
           }
-        }
-      })
-      
-      if (currentSection) {
-        setActiveSection(currentSection.id)
-        const index = navLinks.findIndex(link => link.href === currentSection.id)
-        if (index !== -1) {
-          setActiveIndex(index)
-        }
-      }
-    }
-
-    // Throttled scroll handler
-    let ticking = false
-    const throttledScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll()
-          ticking = false
         })
-        ticking = true
+
+        if (currentSection) {
+          setActiveSection(currentSection.id)
+          const index = navLinks.findIndex((link) => link.href === currentSection.id)
+          if (index !== -1) {
+            setActiveIndex(index)
+          }
+        }
       }
+
+      // Throttled scroll handler
+      let ticking = false
+      const throttledScroll = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            handleScroll()
+            ticking = false
+          })
+          ticking = true
+        }
+      }
+
+      window.addEventListener('scroll', throttledScroll, { passive: true })
+      scrollCleanup = () => window.removeEventListener('scroll', throttledScroll)
+
+      handleScroll() // Initial check
     }
 
-    window.addEventListener('scroll', throttledScroll, { passive: true })
-    handleScroll() // Initial check
+    attachObservers()
 
     return () => {
-      observer.disconnect()
-      window.removeEventListener('scroll', throttledScroll)
+      if (retryTimer) window.clearTimeout(retryTimer)
+      if (observer) observer.disconnect()
+      if (scrollCleanup) scrollCleanup()
     }
   }, [isNavigating])
 

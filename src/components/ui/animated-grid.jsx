@@ -1,58 +1,30 @@
-import { motion } from 'framer-motion'
 import { cn } from '../../lib/utils'
 
 export const AnimatedGrid = ({ className }) => {
-  const gridLines = Array.from({ length: 20 }, (_, i) => i)
-
   return (
-    <div className={cn("absolute inset-0 overflow-hidden", className)}>
-      {/* Horizontal lines */}
-      <div className="absolute inset-0">
-        {gridLines.map((line) => (
-          <motion.div
-            key={`h-${line}`}
-            className="absolute w-full h-px bg-gradient-to-r from-transparent via-blue-500/10 to-transparent"
-            style={{
-              top: `${(line * 100) / gridLines.length}%`,
-            }}
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{
-              opacity: [0, 0.5, 0],
-              scaleX: [0, 1, 0],
-            }}
-            transition={{
-              duration: 4,
-              delay: line * 0.1,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Vertical lines */}
-      <div className="absolute inset-0">
-        {gridLines.map((line) => (
-          <motion.div
-            key={`v-${line}`}
-            className="absolute h-full w-px bg-gradient-to-b from-transparent via-purple-500/10 to-transparent"
-            style={{
-              left: `${(line * 100) / gridLines.length}%`,
-            }}
-            initial={{ opacity: 0, scaleY: 0 }}
-            animate={{
-              opacity: [0, 0.5, 0],
-              scaleY: [0, 1, 0],
-            }}
-            transition={{
-              duration: 4,
-              delay: line * 0.1 + 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-        ))}
-      </div>
+    <div
+      className={cn(
+        'absolute inset-0 overflow-hidden pointer-events-none',
+        className,
+      )}
+      aria-hidden="true"
+    >
+      {/* Single-layer CSS grid (much cheaper than 40 framer-motion nodes) */}
+      <div
+        className="absolute inset-0 opacity-[0.65] motion-reduce:animate-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(99,102,241,0.10) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(168,85,247,0.08) 1px, transparent 1px)
+          `,
+          backgroundSize: '96px 96px',
+          maskImage:
+            'radial-gradient(ellipse at center, black 45%, transparent 72%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse at center, black 45%, transparent 72%)',
+          animation: 'grid-drift 18s ease-in-out infinite alternate',
+        }}
+      />
     </div>
   )
 }

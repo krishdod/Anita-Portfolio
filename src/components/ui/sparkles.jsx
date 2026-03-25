@@ -36,6 +36,7 @@ export const SparklesCore = ({
     const canvas = canvasRef.current
     const ctx = canvas.getContext("2d")
     if (!ctx) return
+    let isRunning = true
 
     const area = canvasSize.width * canvasSize.height
     const baseDensity = particleDensity ?? 40
@@ -69,8 +70,16 @@ export const SparklesCore = ({
     }
 
     let animationFrameId
+    let lastTime = 0
+    const targetDelta = 1000 / 30 // ~30fps cap (smoother overall page)
 
-    const animate = () => {
+    const animate = (time) => {
+      if (!isRunning) return
+      if (time && time - lastTime < targetDelta) {
+        animationFrameId = requestAnimationFrame(animate)
+        return
+      }
+      lastTime = time || 0
       ctx.clearRect(0, 0, canvasSize.width, canvasSize.height)
 
       particles.forEach((particle) => {
@@ -94,9 +103,27 @@ export const SparklesCore = ({
       animationFrameId = requestAnimationFrame(animate)
     }
 
-    animate()
+    animationFrameId = requestAnimationFrame(animate)
 
-    return () => cancelAnimationFrame(animationFrameId)
+    const onVisibility = () => {
+      if (document.hidden) {
+        isRunning = false
+        if (animationFrameId) cancelAnimationFrame(animationFrameId)
+      } else {
+        if (!isRunning) {
+          isRunning = true
+          animationFrameId = requestAnimationFrame(animate)
+        }
+      }
+    }
+
+    document.addEventListener('visibilitychange', onVisibility)
+
+    return () => {
+      isRunning = false
+      document.removeEventListener('visibilitychange', onVisibility)
+      cancelAnimationFrame(animationFrameId)
+    }
   }, [canvasSize, minSize, maxSize, particleDensity, particleColor])
 
   return (

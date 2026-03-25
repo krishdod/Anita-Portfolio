@@ -45,9 +45,10 @@ class Particle {
     this.acc = { x: 0, y: 0 }
     this.target = { x: 0, y: 0 }
 
-    this.closeEnoughTarget = 100
-    this.maxSpeed = 1.0
-    this.maxForce = 0.1
+    // Faster formation so intro completes sooner
+    this.closeEnoughTarget = 65
+    this.maxSpeed = 2.2
+    this.maxForce = 0.2
     this.particleSize = 10
     this.isKilled = false
 
@@ -195,9 +196,10 @@ export function ParticleTextEffect({
 
   // Adjust pixel steps based on screen size for better mobile performance
   const getPixelSteps = (width) => {
-    if (width < 640) return 4 // More particles on mobile for better detail
-    if (width < 1024) return 5
-    return 6 // Desktop
+    // Slightly fewer particles overall -> faster formation & less CPU
+    if (width < 640) return 5
+    if (width < 1024) return 6
+    return 10 // Desktop
   }
   const drawAsPoints = true
 
@@ -360,7 +362,8 @@ export function ParticleTextEffect({
           Math.pow(particle.pos.x - particle.target.x, 2) +
             Math.pow(particle.pos.y - particle.target.y, 2)
         )
-        if (distance > 5) {
+        // Consider "done" a bit earlier to reduce intro time
+        if (distance > 9) {
           allReachedTarget = false
         }
       }

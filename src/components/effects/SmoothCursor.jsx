@@ -78,7 +78,7 @@ export function SmoothCursor() {
 
   return (
     <>
-      {/* Glass ring — avoid mix-blend-difference (inverts gradient text → green artifacts) */}
+      {/* Premium cursor ring — subtle gradient + glow, no blend-modes */}
       <motion.div
         ref={cursorRef}
         className="pointer-events-none fixed left-0 top-0 z-[9999] hidden md:block"
@@ -91,7 +91,10 @@ export function SmoothCursor() {
         animate={{ opacity: isHoveringWorkCard ? 0 : 1 }}
         transition={{ duration: 0.2 }}
       >
-        <div className="h-8 w-8 rounded-full border border-foreground/15 bg-background/35 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.12)] transition-transform duration-200 dark:border-white/25 dark:bg-white/[0.08] dark:shadow-[0_4px_28px_rgba(0,0,0,0.45)]" />
+        <div className="relative h-9 w-9 rounded-full">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/35 via-accent/20 to-transparent blur-[6px] opacity-80" />
+          <div className="absolute inset-0 rounded-full bg-background/25 backdrop-blur-md ring-1 ring-foreground/10 shadow-[0_10px_30px_rgba(0,0,0,0.10)] dark:bg-white/[0.06] dark:ring-white/15 dark:shadow-[0_14px_44px_rgba(0,0,0,0.45)]" />
+        </div>
       </motion.div>
 
       <motion.div
@@ -106,7 +109,7 @@ export function SmoothCursor() {
         animate={{ opacity: isHoveringWorkCard ? 0 : 1 }}
         transition={{ duration: 0.2 }}
       >
-        <div className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_12px_hsl(var(--primary))] transition-transform duration-200" />
+        <div className="h-2 w-2 rounded-full bg-foreground/85 shadow-[0_0_18px_rgba(0,0,0,0.18)] dark:bg-white/90 dark:shadow-[0_0_22px_rgba(255,255,255,0.12)]" />
       </motion.div>
     </>
   )

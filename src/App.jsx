@@ -19,10 +19,12 @@ import { AnimatedWaves } from './components/ui/animated-waves'
 import { FloatingShapes } from './components/ui/floating-shapes'
 import AllProjects from './pages/AllProjects'
 import { smoothScrollTo } from './lib/utils'
+import { usePerfMode } from './hooks/usePerfMode'
 
 function HomePage() {
   const location = useLocation()
   const navigate = useNavigate()
+  const perfMode = usePerfMode()
   const [showIntro, setShowIntro] = useState(true)
   const [particleEffectComplete, setParticleEffectComplete] = useState(false)
   const [scrollLocked, setScrollLocked] = useState(true)
@@ -86,17 +88,11 @@ function HomePage() {
           }}
         />
         
-        {/* Animated Grid Pattern */}
-        <AnimatedGrid className="opacity-30" />
-        
-        {/* Animated Waves */}
-        <AnimatedWaves className="opacity-40" />
-        
-        {/* Floating Shapes */}
-        <FloatingShapes className="opacity-50" />
-        
-        {/* Animated Background with Beams */}
-        <BackgroundBeams className="opacity-50" />
+        {/* Heavy ambient layers (disabled in perf mode) */}
+        {!perfMode && <AnimatedGrid className="opacity-25" />}
+        {!perfMode && <AnimatedWaves className="opacity-35" />}
+        {!perfMode && <FloatingShapes className="opacity-45" />}
+        {!perfMode && <BackgroundBeams className="opacity-45" />}
         
         {/* Enhanced Sparkles Effect */}
         <SparklesCore
@@ -104,53 +100,57 @@ function HomePage() {
           background="transparent"
           minSize={0.6}
           maxSize={2}
-          particleDensity={35}
+          particleDensity={perfMode ? 14 : 26}
           className="w-full h-full pointer-events-none"
           particleColor="100, 150, 255"
         />
 
         {/* Advanced Gradient Orbs with Glow */}
-        <motion.div
-          className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-gradient-to-br from-blue-500/10 dark:from-blue-500/30 via-purple-500/10 dark:via-purple-500/20 to-transparent rounded-full blur-[100px]"
-          animate={{
-            x: [0, 150, 0],
-            y: [0, 80, 0],
-            scale: [1, 1.2, 1],
-            opacity: [0.4, 0.6, 0.4],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-purple-500/10 dark:from-purple-500/30 via-pink-500/10 dark:via-pink-500/20 to-transparent rounded-full blur-[120px]"
-          animate={{
-            x: [0, -150, 0],
-            y: [0, -80, 0],
-            scale: [1, 1.3, 1],
-            opacity: [0.4, 0.7, 0.4],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-pink-500/10 dark:from-pink-500/20 via-blue-500/8 dark:via-blue-500/15 to-transparent rounded-full blur-[80px]"
-          animate={{
-            scale: [1, 1.4, 1],
-            rotate: [0, 180, 360],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }}
-        />
+        {!perfMode && (
+          <>
+            <motion.div
+              className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-gradient-to-br from-blue-500/10 dark:from-blue-500/30 via-purple-500/10 dark:via-purple-500/20 to-transparent rounded-full blur-[100px]"
+              animate={{
+                x: [0, 150, 0],
+                y: [0, 80, 0],
+                scale: [1, 1.2, 1],
+                opacity: [0.35, 0.55, 0.35],
+              }}
+              transition={{
+                duration: 28,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+            <motion.div
+              className="absolute bottom-1/4 -right-20 w-[600px] h-[600px] bg-gradient-to-br from-purple-500/10 dark:from-purple-500/30 via-pink-500/10 dark:via-pink-500/20 to-transparent rounded-full blur-[120px]"
+              animate={{
+                x: [0, -150, 0],
+                y: [0, -80, 0],
+                scale: [1, 1.28, 1],
+                opacity: [0.35, 0.6, 0.35],
+              }}
+              transition={{
+                duration: 24,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+            <motion.div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-pink-500/10 dark:from-pink-500/20 via-blue-500/8 dark:via-blue-500/15 to-transparent rounded-full blur-[80px]"
+              animate={{
+                scale: [1, 1.35, 1],
+                rotate: [0, 180, 360],
+                opacity: [0.26, 0.42, 0.26],
+              }}
+              transition={{
+                duration: 34,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+          </>
+        )}
       </div>
 
       {/* Full-screen particle intro overlay */}
