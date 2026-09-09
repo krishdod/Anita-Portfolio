@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://anita-portfolio-one.vercel.app/sitemap.xml
