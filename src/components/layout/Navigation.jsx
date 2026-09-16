@@ -6,6 +6,10 @@ import { useTheme } from '../../hooks/useTheme'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { navigation, profile } from '../../data/profile'
 
+const supportsDialogModal =
+  typeof HTMLDialogElement !== 'undefined' &&
+  typeof HTMLDialogElement.prototype.showModal === 'function'
+
 export function Navigation() {
   const location = useLocation()
   const { isDark, toggleTheme } = useTheme()
@@ -42,12 +46,40 @@ export function Navigation() {
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
-    if (!isOpen) { if (dialog.open) dialog.close(); return }
+    if (!isOpen) {
+      if (dialog.open || dialog.hasAttribute('open')) {
+        if (supportsDialogModal && typeof dialog.close === 'function') dialog.close()
+        else dialog.removeAttribute('open')
+      }
+      dialog.classList.remove('is-fallback-open')
+      return
+    }
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    dialog.showModal()
+    if (supportsDialogModal) {
+      dialog.showModal()
+    } else {
+      dialog.setAttribute('open', '')
+      dialog.classList.add('is-fallback-open')
+    }
+    const onEscape = (event) => {
+      if (!supportsDialogModal && event.key === 'Escape') setIsOpen(false)
+    }
+    window.addEventListener('keydown', onEscape)
     return () => {
-      if (dialog.open) dialog.close()
+      window.removeEventListener('keydown', onEscape)
+      const destination = destinationRef.current
+      if (dialog.open || dialog.hasAttribute('open')) {
+        if (supportsDialogModal && typeof dialog.close === 'function') {
+          dialog.close()
+        } else {
+          dialog.removeAttribute('open')
+          destinationRef.current = null
+          if (destination) requestAnimationFrame(() => document.getElementById(destination)?.focus({ preventScroll: true }))
+          else triggerRef.current?.focus({ preventScroll: true })
+        }
+      }
+      dialog.classList.remove('is-fallback-open')
       document.body.style.overflow = previousOverflow
     }
   }, [isOpen])
@@ -65,7 +97,7 @@ export function Navigation() {
       to={'/#' + id}
       state={{ skipIntro: true }}
       onClick={() => followSection(id)}
-      aria-current={active === id ? 'location' : undefined}
+      aria-current={location.pathname === '/' && active === id ? 'location' : undefined}
       className={mobile ? 'mobile-nav-link' : 'desktop-nav-link'}
     >
       {label}
@@ -98,45 +130,50 @@ export function Navigation() {
         </div>
       </header>
       {createPortal(
-        <dialog
-          ref={dialogRef}
-          id="mobile-navigation"
-          className="mobile-menu"
-          aria-labelledby="menu-title"
-          onCancel={() => setIsOpen(false)}
-          onClose={() => {
-            setIsOpen(false)
-            const destination = destinationRef.current
-            destinationRef.current = null
-            if (destination) requestAnimationFrame(() => document.getElementById(destination)?.focus({ preventScroll: true }))
-            else triggerRef.current?.focus({ preventScroll: true })
-          }}
-          onKeyDown={(event) => {
-            if (event.key !== 'Tab') return
-            const items = event.currentTarget.querySelectorAll('a[href], button:not([disabled])')
-            const first = items[0]
-            const last = items[items.length - 1]
-            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
-            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
-          }}
-          onClick={(event) => { if (event.target === event.currentTarget) setIsOpen(false) }}
-        >
-          <div className="mobile-menu-content">
-            <div className="flex items-center justify-between mb-8">
-              <h2 id="menu-title" className="text-lg">Explore the portfolio</h2>
-              <button type="button" className="icon-button" onClick={() => setIsOpen(false)} aria-label="Close navigation" autoFocus>
-                <X size={22} aria-hidden="true" />
-              </button>
+        <>
+          {isOpen && !supportsDialogModal && (
+            <div className="mobile-menu-backdrop" aria-hidden="true" onClick={() => setIsOpen(false)} />
+          )}
+          <dialog
+            ref={dialogRef}
+            id="mobile-navigation"
+            className="mobile-menu"
+            aria-labelledby="menu-title"
+            onCancel={() => setIsOpen(false)}
+            onClose={() => {
+              setIsOpen(false)
+              const destination = destinationRef.current
+              destinationRef.current = null
+              if (destination) requestAnimationFrame(() => document.getElementById(destination)?.focus({ preventScroll: true }))
+              else triggerRef.current?.focus({ preventScroll: true })
+            }}
+            onKeyDown={(event) => {
+              if (event.key !== 'Tab') return
+              const items = event.currentTarget.querySelectorAll('a[href], button:not([disabled])')
+              const first = items[0]
+              const last = items[items.length - 1]
+              if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+              else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+            }}
+            onClick={(event) => { if (event.target === event.currentTarget) setIsOpen(false) }}
+          >
+            <div className="mobile-menu-content">
+              <div className="flex items-center justify-between mb-8">
+                <h2 id="menu-title" className="text-lg">Explore the portfolio</h2>
+                <button type="button" className="icon-button" onClick={() => setIsOpen(false)} aria-label="Close navigation" autoFocus>
+                  <X size={22} aria-hidden="true" />
+                </button>
+              </div>
+              <nav aria-label="Mobile">{sectionLinks(true)}</nav>
+              <div className="mt-auto pt-10 flex flex-col gap-4">
+                <a href={profile.resume} download className="button-primary"><Download size={18} aria-hidden="true" /> Download résumé</a>
+                <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground inline-flex gap-2 items-center">
+                  Connect on LinkedIn <ArrowUpRight size={16} aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </div>
             </div>
-            <nav aria-label="Mobile">{sectionLinks(true)}</nav>
-            <div className="mt-auto pt-10 flex flex-col gap-4">
-              <a href={profile.resume} download className="button-primary"><Download size={18} aria-hidden="true" /> Download résumé</a>
-              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground inline-flex gap-2 items-center">
-                Connect on LinkedIn <ArrowUpRight size={16} aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            </div>
-          </div>
-        </dialog>,
+          </dialog>
+        </>,
         document.body,
       )}
     </>

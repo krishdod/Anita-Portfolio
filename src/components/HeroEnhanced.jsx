@@ -36,12 +36,19 @@ function ShowcaseImage({ project, priority = false }) {
   )
 }
 
-export default function HeroEnhanced({ nameFromIntro = false }) {
+export default function HeroEnhanced({ nameFromIntro = false, handoffPhase = 'done' }) {
   const { reducedMotion } = useMotionPreference()
   const finePointer = useMediaQuery('(hover: hover) and (pointer: fine)')
   const [active, setActive] = useState(0)
-  const [nameVisible, setNameVisible] = useState(!nameFromIntro || reducedMotion)
-  const [contentReady, setContentReady] = useState(!nameFromIntro || reducedMotion)
+  const fromIntro = nameFromIntro && !reducedMotion
+  const nameVisible =
+    !fromIntro ||
+    handoffPhase === 'outline' ||
+    handoffPhase === 'ink' ||
+    handoffPhase === 'content' ||
+    handoffPhase === 'done'
+  const contentReady = !fromIntro || handoffPhase === 'content' || handoffPhase === 'done'
+  const typeMotionReady = !fromIntro || handoffPhase === 'ink' || handoffPhase === 'content' || handoffPhase === 'done'
   const nameRef = useRef(null)
   const nameInView = useInView(nameRef, { amount: 0.1 })
   const tiltX = useMotionValue(0)
@@ -57,44 +64,6 @@ export default function HeroEnhanced({ nameFromIntro = false }) {
     }
   }, [reducedMotion, finePointer, tiltX, tiltY])
 
-  // Reveal styled name when particle handoff marks the target as revealing/done.
-  useEffect(() => {
-    if (!nameFromIntro || reducedMotion) {
-      setNameVisible(true)
-      setContentReady(true)
-      return
-    }
-
-    const node = nameRef.current
-    if (!node) return
-
-    const reveal = () => {
-      setNameVisible(true)
-      window.setTimeout(() => setContentReady(true), 220)
-    }
-
-    if (node.getAttribute('data-handoff') === 'revealing' || node.getAttribute('data-handoff') === 'done') {
-      reveal()
-      return
-    }
-
-    const observer = new MutationObserver(() => {
-      const state = node.getAttribute('data-handoff')
-      if (state === 'revealing' || state === 'done') {
-        reveal()
-        observer.disconnect()
-      }
-    })
-    observer.observe(node, { attributes: true, attributeFilter: ['data-handoff'] })
-
-    // Fallback if handoff attribute never arrives.
-    const fallback = window.setTimeout(reveal, 2400)
-    return () => {
-      observer.disconnect()
-      window.clearTimeout(fallback)
-    }
-  }, [nameFromIntro, reducedMotion])
-
   const followPointer = (event) => {
     if (reducedMotion || !finePointer || event.pointerType === 'touch') return
     const bounds = event.currentTarget.getBoundingClientRect()
@@ -103,20 +72,22 @@ export default function HeroEnhanced({ nameFromIntro = false }) {
   }
 
   const entrance = (delay = 0) => ({
-    initial: reducedMotion || !contentReady ? false : { opacity: 0, y: 22 },
-    animate: { opacity: contentReady ? 1 : 0, y: contentReady ? 0 : 22 },
+    initial: reducedMotion || !contentReady ? false : { opacity: 0, y: 14 },
+    animate: { opacity: contentReady ? 1 : 0, y: contentReady ? 0 : 14 },
     transition: {
-      duration: 0.7,
+      duration: 0.55,
       delay: reducedMotion || !contentReady ? 0 : delay,
       ease: [0.22, 1, 0.36, 1],
     },
   })
 
+  const handoffAttr = fromIntro && handoffPhase !== 'done' ? handoffPhase : undefined
+
   return (
     <section id="home" tabIndex={-1} className="hero-section studio-hero relative">
       <div className="hero-atmosphere" aria-hidden="true" />
       <div className="container-width relative z-10">
-        <motion.div className="hero-topline" {...entrance()}>
+        <motion.div className="hero-topline" {...entrance(0)}>
           <p className="hero-kicker">
             <Code2 size={18} aria-hidden="true" /> A developer's eye. A maker's mindset.
           </p>
@@ -130,20 +101,18 @@ export default function HeroEnhanced({ nameFromIntro = false }) {
           <motion.p
             className="hero-greeting"
             initial={false}
-            animate={{ opacity: contentReady ? 1 : 0, y: contentReady ? 0 : 10 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            animate={{ opacity: contentReady ? 1 : 0, y: contentReady ? 0 : 8 }}
+            transition={{ duration: 0.45, delay: contentReady ? 0.04 : 0, ease: [0.22, 1, 0.36, 1] }}
           >
             Hello, I'm <span aria-hidden="true">↘</span>
           </motion.p>
-          <motion.h1
+          <h1
             ref={nameRef}
             id="home-hero-name"
             className="hero-name studio-name"
-            data-name-motion={nameInView && !reducedMotion && nameVisible ? 'running' : 'paused'}
-            data-handoff={nameFromIntro && !nameVisible ? 'receiving' : undefined}
-            initial={false}
-            animate={{ opacity: nameVisible ? 1 : 0 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            data-name-motion={nameInView && !reducedMotion && nameVisible && typeMotionReady ? 'running' : 'paused'}
+            data-handoff={handoffAttr}
+            style={!fromIntro || handoffPhase === 'done' || handoffPhase === 'content' ? { opacity: 1 } : undefined}
           >
             <span className="sr-only">Anita Dantani</span>
             <span className="hero-first-name" aria-hidden="true">
@@ -156,11 +125,11 @@ export default function HeroEnhanced({ nameFromIntro = false }) {
               <span className="hero-name-period" />
             </span>
             <Sparkle className="studio-name-spark" aria-hidden="true" strokeWidth={1} />
-          </motion.h1>
+          </h1>
         </div>
 
         <div className="studio-hero-grid">
-          <motion.div className="studio-introduction" {...entrance(0.08)}>
+          <motion.div className="studio-introduction" {...entrance(0.06)}>
             <p className="eyebrow">Senior Shopify Plus Developer</p>
             <h2 className="studio-manifesto">
               Code with intent.
@@ -188,7 +157,7 @@ export default function HeroEnhanced({ nameFromIntro = false }) {
             </p>
           </motion.div>
 
-          <motion.div className="studio-showcase" {...entrance(0.14)}>
+          <motion.div className="studio-showcase" {...entrance(0.1)}>
             <div className="studio-showcase-top">
               <span>
                 <span className="hero-status-dot" aria-hidden="true" /> A glimpse of my work
@@ -256,7 +225,7 @@ export default function HeroEnhanced({ nameFromIntro = false }) {
           </motion.div>
         </div>
 
-        <motion.div className="hero-bottom studio-hero-bottom" {...entrance(0.2)}>
+        <motion.div className="hero-bottom studio-hero-bottom" {...entrance(0.14)}>
           <dl className="hero-stats">
             {stats.map(({ value, label }) => (
               <div key={label}>

@@ -8,11 +8,12 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/check-project.mjs && vite build && node scripts/check-dist.mjs",
+    "build": "node scripts/check-project.mjs && node scripts/check-a11y.mjs && vite build && node scripts/emit-route-html.mjs && node scripts/check-dist.mjs",
     "preview": "vite preview",
     "images:optimize": "node scripts/optimize-images.mjs",
     "images:og": "node scripts/generate-og-image.mjs",
-    "check": "node scripts/check-project.mjs"
+    "check": "node scripts/check-project.mjs && node scripts/check-a11y.mjs",
+    "lint": "node scripts/check-a11y.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -43,6 +44,7 @@
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.16",
+    "playwright": "^1.63.0",
     "postcss": "^8.5.28",
     "sharp": "^0.35.4",
     "tailwindcss": "^3.4.0",

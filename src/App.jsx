@@ -1,6 +1,5 @@
-import { Component, lazy, Suspense, useCallback, useEffect, useState } from 'react'
+import { Component, lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { BrowserRouter, Outlet, Route, Routes, useLocation } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { Navigation } from './components/layout/Navigation'
 import { SmoothCursor } from './components/effects/SmoothCursor'
@@ -129,9 +128,14 @@ function HomePage() {
   const { reducedMotion } = useMotionPreference()
   const [introPhase, setIntroPhase] = useState(() => getInitialIntroPhase(location))
   const [nameFromIntro, setNameFromIntro] = useState(false)
+  const [handoffPhase, setHandoffPhase] = useState('done')
+  const particleIntroRef = useRef(null)
+  const introDialogRef = useRef(null)
+  const skipButtonRef = useRef(null)
 
   const finishIntro = useCallback(() => {
     hasEnteredPortfolio = true
+    setHandoffPhase('done')
     setIntroPhase('done')
   }, [])
 
@@ -140,8 +144,14 @@ function HomePage() {
     setIntroPhase((phase) => (phase === 'done' ? 'done' : 'handingOff'))
   }, [])
 
+  const handleHandoffPhase = useCallback((phase) => {
+    setHandoffPhase(phase)
+  }, [])
+
   const skipIntro = useCallback(() => {
+    particleIntroRef.current?.cancelHandoff?.()
     setNameFromIntro(false)
+    setHandoffPhase('done')
     finishIntro()
   }, [finishIntro])
 
@@ -165,25 +175,75 @@ function HomePage() {
     return () => window.clearTimeout(timer)
   }, [introPhase, reducedMotion, skipIntro])
 
+  // Scroll lock + inert shell + focus trap for the entire blocking intro.
   useEffect(() => {
     if (introPhase === 'done') return
     const previousOverflow = document.body.style.overflow
-    const previousFocus = document.activeElement
     document.body.style.overflow = 'hidden'
-    const header = document.querySelector('.site-header')
-    const footer = document.querySelector('footer')
-    header?.setAttribute('inert', '')
-    footer?.setAttribute('inert', '')
-    const handleKey = (event) => {
-      if (event.key === 'Escape') skipIntro()
+
+    const shell = [
+      document.querySelector('.site-header'),
+      document.getElementById('main-content'),
+      document.querySelector('footer'),
+    ]
+      .filter(Boolean)
+      .map((el) => ({
+        el,
+        hadInert: el.hasAttribute('inert'),
+      }))
+
+    for (const { el } of shell) el.setAttribute('inert', '')
+
+    const focusSkip = () => {
+      skipButtonRef.current?.focus({ preventScroll: true })
     }
+    focusSkip()
+
+    const focusableSelector =
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+    const handleKey = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        skipIntro()
+        return
+      }
+      if (event.key !== 'Tab') return
+      const dialog = introDialogRef.current
+      if (!dialog) return
+      const items = [...dialog.querySelectorAll(focusableSelector)].filter(
+        (node) => node instanceof HTMLElement && !node.hasAttribute('disabled') && node.tabIndex !== -1
+      )
+      if (items.length === 0) {
+        event.preventDefault()
+        focusSkip()
+        return
+      }
+      const first = items[0]
+      const last = items[items.length - 1]
+      const active = document.activeElement
+      if (!dialog.contains(active)) {
+        event.preventDefault()
+        first.focus()
+        return
+      }
+      if (event.shiftKey && active === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
     window.addEventListener('keydown', handleKey)
     return () => {
       document.body.style.overflow = previousOverflow
-      header?.removeAttribute('inert')
-      footer?.removeAttribute('inert')
+      for (const { el, hadInert } of shell) {
+        if (hadInert) el.setAttribute('inert', '')
+        else el.removeAttribute('inert')
+      }
       window.removeEventListener('keydown', handleKey)
-      if (previousFocus instanceof HTMLElement) previousFocus.focus({ preventScroll: true })
     }
   }, [introPhase, skipIntro])
 
@@ -209,51 +269,53 @@ function HomePage() {
   }, [introPhase, location.hash, location.state, location.key])
 
   const showIntro = introPhase === 'playing' || introPhase === 'handingOff'
-  const showContent = introPhase === 'handingOff' || introPhase === 'done'
+  // Portfolio stays mounted under the opaque intro for the entire sequence.
+  const showContent = true
+  const overlayClass = 'fixed inset-0 z-[999] pointer-events-auto'
 
   return (
     <>
-      <AnimatePresence>
-        {showIntro && (
-          <motion.div
-            key="intro"
-            className="fixed inset-0 z-[999] pointer-events-auto"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Welcome to Anita Dantani’s portfolio"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      {showIntro && (
+        <div
+          ref={introDialogRef}
+          key="intro"
+          className={overlayClass}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Welcome to Anita Dantani’s portfolio"
+        >
+          {reducedMotion ? (
+            <div className="absolute inset-0 bg-black flex items-center justify-center px-6">
+              <p className="text-white text-center font-heading font-bold text-3xl sm:text-5xl">
+                ANITA DANTANI
+              </p>
+            </div>
+          ) : (
+            <ParticleIntro
+              ref={particleIntroRef}
+              onFormed={startHandoff}
+              onHandoffPhase={handleHandoffPhase}
+              onHandoffComplete={finishIntro}
+            />
+          )}
+          <button
+            ref={skipButtonRef}
+            type="button"
+            autoFocus
+            onClick={skipIntro}
+            className="intro-skip pointer-events-auto"
           >
-            {reducedMotion ? (
-              <div className="absolute inset-0 bg-black flex items-center justify-center px-6">
-                <p className="text-white text-center font-heading font-bold text-3xl sm:text-5xl">
-                  ANITA DANTANI
-                </p>
-              </div>
-            ) : (
-              <ParticleIntro onFormed={startHandoff} onHandoffComplete={finishIntro} />
-            )}
-            {showIntro && (
-              <button
-                type="button"
-                autoFocus={introPhase === 'playing'}
-                onClick={skipIntro}
-                onKeyDown={(event) => {
-                  if (event.key === 'Tab' && introPhase === 'playing') event.preventDefault()
-                }}
-                className="intro-skip"
-              >
-                Enter portfolio <ArrowRight size={16} aria-hidden="true" />
-              </button>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Enter portfolio <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        </div>
+      )}
       <main id="main-content" tabIndex={-1} className="relative">
         {showContent && (
           <>
-            <HeroEnhanced nameFromIntro={nameFromIntro && !reducedMotion} />
+            <HeroEnhanced
+              nameFromIntro={nameFromIntro && !reducedMotion && showIntro}
+              handoffPhase={nameFromIntro && !reducedMotion && showIntro ? handoffPhase : 'done'}
+            />
             <ProjectsEnhanced />
             <About />
             <Work />

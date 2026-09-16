@@ -114,6 +114,14 @@ class Particle {
 
     ctx.fillStyle = `rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`
 
+    if (this.collapsing) {
+      const radius = Math.max(0.6, this.particleSize / 2)
+      ctx.beginPath()
+      ctx.arc(this.pos.x, this.pos.y, radius, 0, Math.PI * 2)
+      ctx.fill()
+      return
+    }
+
     if (drawAsPoints) {
       const size = Math.max(1.5, 2 / devicePixelRatio)
       ctx.fillRect(this.pos.x, this.pos.y, size, size)
@@ -142,6 +150,60 @@ class Particle {
       this.isKilled = true
     }
   }
+
+  collapseToward(x, y, accent = { r: 75, g: 224, b: 213 }) {
+    this.startColor = {
+      r: this.startColor.r + (this.targetColor.r - this.startColor.r) * this.colorWeight,
+      g: this.startColor.g + (this.targetColor.g - this.startColor.g) * this.colorWeight,
+      b: this.startColor.b + (this.targetColor.b - this.startColor.b) * this.colorWeight,
+    }
+    this.targetColor = accent
+    this.colorWeight = 0
+    this.colorBlendRate = 0.08 + Math.random() * 0.06
+    const angle = Math.random() * Math.PI * 2
+    const radius = Math.random() * 7
+    this.target.x = x + Math.cos(angle) * radius
+    this.target.y = y + Math.sin(angle) * radius
+    this.home.x = this.target.x
+    this.home.y = this.target.y
+    this.orbitOx = Math.cos(angle) * radius
+    this.orbitOy = Math.sin(angle) * radius
+    this.maxSpeed = 18 + Math.random() * 14
+    this.maxForce = this.maxSpeed * 0.22
+    this.particleSize = Math.max(2, this.particleSize * 0.45)
+    this.isKilled = false
+    this.attracting = true
+    this.collapsing = true
+  }
+
+  /** Stream toward a moving cursor glow without absorbing yet. */
+  beginAttract(accent = { r: 75, g: 224, b: 213 }) {
+    this.startColor = {
+      r: this.startColor.r + (this.targetColor.r - this.startColor.r) * this.colorWeight,
+      g: this.startColor.g + (this.targetColor.g - this.startColor.g) * this.colorWeight,
+      b: this.startColor.b + (this.targetColor.b - this.startColor.b) * this.colorWeight,
+    }
+    this.targetColor = accent
+    this.colorWeight = 0
+    this.colorBlendRate = 0.06 + Math.random() * 0.05
+    this.orbitOx = (Math.random() - 0.5) * 36
+    this.orbitOy = (Math.random() - 0.5) * 36
+    this.maxSpeed = 11 + Math.random() * 9
+    this.maxForce = this.maxSpeed * 0.15
+    this.isKilled = false
+    this.attracting = true
+    this.collapsing = false
+  }
+
+  lockAbsorb() {
+    if (!this.attracting) return
+    this.orbitOx *= 0.2
+    this.orbitOy *= 0.2
+    this.maxSpeed = 18 + Math.random() * 12
+    this.maxForce = this.maxSpeed * 0.22
+    this.particleSize = Math.max(2, this.particleSize * 0.5)
+    this.collapsing = true
+  }
 }
 
 export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
@@ -162,10 +224,13 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
   const hasFormedRef = useRef(false)
   const hasCompletedRef = useRef(false)
   const isAnimatingRef = useRef(false)
-  const phaseRef = useRef('form') // form | idle | dissolve
+  const phaseRef = useRef('form') // form | idle | dissolve | collapse
   const dissolveStartedRef = useRef(false)
+  const collapseStartedRef = useRef(false)
   const formedNotifiedRef = useRef(false)
   const holdTimerRef = useRef(null)
+  const wordBoundsRef = useRef(null)
+  const attractorRef = useRef({ x: 0, y: 0, locked: false, active: false })
   const onFormedRef = useRef(onFormed)
   const onDissolveCompleteRef = useRef(onDissolveComplete)
 
@@ -176,15 +241,20 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
     onDissolveCompleteRef.current = onDissolveComplete
   }, [onDissolveComplete])
 
-  const getPixelSteps = (width) => {
-    if (width < 640) return 5
-    if (width < 1024) return 6
-    return 10
+  const getRenderDpr = () => Math.min(window.devicePixelRatio || 1, 1.5)
+
+  // Step size scales with backing-store width so retina displays stay bounded.
+  const getPixelSteps = (backingWidth, dpr) => {
+    const cssWidth = backingWidth / dpr
+    const density = dpr > 1 ? 1.35 : 1
+    if (cssWidth < 640) return Math.round(6 * density * dpr)
+    if (cssWidth < 1024) return Math.round(8 * density * dpr)
+    return Math.round(12 * density * dpr)
   }
   const drawAsPoints = true
 
   const formText = (word, canvas) => {
-    const dpr = window.devicePixelRatio || 1
+    const dpr = getRenderDpr()
     const displayWidth = canvas.width / dpr
     const displayHeight = canvas.height / dpr
 
@@ -218,10 +288,20 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
 
     const particles = particlesRef.current
     let particleIndex = 0
-    const pixelSteps = getPixelSteps(canvas.width)
+    const pixelSteps = getPixelSteps(canvas.width, dpr)
+    // Collect opaque text pixels first — capping before the alpha filter
+    // was discarding almost all name samples on retina canvases.
     const coordsIndexes = []
     for (let i = 0; i < pixels.length; i += pixelSteps * 4) {
-      coordsIndexes.push(i)
+      if (pixels[i + 3] > 0) coordsIndexes.push(i)
+    }
+    const maxParticles = displayWidth < 640 ? 1800 : 3200
+    if (coordsIndexes.length > maxParticles) {
+      const stride = Math.ceil(coordsIndexes.length / maxParticles)
+      const sampled = []
+      for (let i = 0; i < coordsIndexes.length; i += stride) sampled.push(coordsIndexes[i])
+      coordsIndexes.length = 0
+      coordsIndexes.push(...sampled)
     }
 
     for (let i = coordsIndexes.length - 1; i > 0; i--) {
@@ -229,56 +309,97 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
       ;[coordsIndexes[i], coordsIndexes[j]] = [coordsIndexes[j], coordsIndexes[i]]
     }
 
-    for (const coordIndex of coordsIndexes) {
-      const pixelIndex = coordIndex
-      const alpha = pixels[pixelIndex + 3]
+    for (const pixelIndex of coordsIndexes) {
+      const x = ((pixelIndex / 4) % canvas.width) / dpr
+      const y = Math.floor(pixelIndex / 4 / canvas.width) / dpr
 
-      if (alpha > 0) {
-        const x = ((pixelIndex / 4) % canvas.width) / dpr
-        const y = Math.floor(pixelIndex / 4 / canvas.width) / dpr
+      let particle
+      if (particleIndex < particles.length) {
+        particle = particles[particleIndex]
+        particle.isKilled = false
+        particleIndex++
+      } else {
+        particle = new Particle()
+        const randomPos = getEdgeOffscreenPos(displayWidth, displayHeight)
+        particle.pos.x = randomPos.x
+        particle.pos.y = randomPos.y
 
-        let particle
-        if (particleIndex < particles.length) {
-          particle = particles[particleIndex]
-          particle.isKilled = false
-          particleIndex++
-        } else {
-          particle = new Particle()
-          const randomPos = getEdgeOffscreenPos(displayWidth, displayHeight)
-          particle.pos.x = randomPos.x
-          particle.pos.y = randomPos.y
-
-          const mobile = displayWidth < 640
-          particle.maxSpeed = mobile ? Math.random() * 8 + 6 : Math.random() * 10 + 8
-          particle.maxForce = particle.maxSpeed * 0.1
-          particle.particleSize = mobile ? Math.random() * 3 + 3 : Math.random() * 6 + 6
-          particle.colorBlendRate = Math.random() * 0.0275 + 0.0025
-          particles.push(particle)
-        }
-
-        particle.startColor = {
-          r: particle.startColor.r + (particle.targetColor.r - particle.startColor.r) * particle.colorWeight,
-          g: particle.startColor.g + (particle.targetColor.g - particle.startColor.g) * particle.colorWeight,
-          b: particle.startColor.b + (particle.targetColor.b - particle.startColor.b) * particle.colorWeight,
-        }
-        particle.targetColor = newColor
-        particle.colorWeight = 0
-        particle.target.x = x
-        particle.target.y = y
-        particle.home.x = x
-        particle.home.y = y
+        const mobile = displayWidth < 640
+        particle.maxSpeed = mobile ? Math.random() * 8 + 6 : Math.random() * 10 + 8
+        particle.maxForce = particle.maxSpeed * 0.1
+        particle.particleSize = mobile ? Math.random() * 3 + 3 : Math.random() * 6 + 6
+        particle.colorBlendRate = Math.random() * 0.0275 + 0.0025
+        particles.push(particle)
       }
+
+      particle.startColor = {
+        r: particle.startColor.r + (particle.targetColor.r - particle.startColor.r) * particle.colorWeight,
+        g: particle.startColor.g + (particle.targetColor.g - particle.startColor.g) * particle.colorWeight,
+        b: particle.startColor.b + (particle.targetColor.b - particle.startColor.b) * particle.colorWeight,
+      }
+      particle.targetColor = newColor
+      particle.colorWeight = 0
+      particle.target.x = x
+      particle.target.y = y
+      particle.home.x = x
+      particle.home.y = y
     }
 
     for (let i = particleIndex; i < particles.length; i++) {
       particles[i].kill(displayWidth, displayHeight)
     }
 
+    // CSS-pixel bounds of the formed word inside the canvas (for DOM handoff).
+    let minX = Infinity
+    let minY = Infinity
+    let maxX = -Infinity
+    let maxY = -Infinity
+    for (let i = 0; i < particleIndex; i++) {
+      const home = particles[i].home
+      if (home.x < minX) minX = home.x
+      if (home.y < minY) minY = home.y
+      if (home.x > maxX) maxX = home.x
+      if (home.y > maxY) maxY = home.y
+    }
+    wordBoundsRef.current =
+      particleIndex > 0 && Number.isFinite(minX)
+        ? { minX, minY, maxX, maxY }
+        : {
+            minX: displayWidth * 0.15,
+            minY: displayHeight * 0.4,
+            maxX: displayWidth * 0.85,
+            maxY: displayHeight * 0.6,
+          }
+
     hasFormedRef.current = false
   }
 
+  const getWordBounds = () => {
+    const canvas = canvasRef.current
+    const local = wordBoundsRef.current
+    if (!canvas || !local) return null
+
+    const rect = canvas.getBoundingClientRect()
+    const pad = 8
+    const left = rect.left + local.minX - pad
+    const top = rect.top + local.minY - pad
+    const width = local.maxX - local.minX + pad * 2
+    const height = local.maxY - local.minY + pad * 2
+
+    return {
+      left,
+      top,
+      width,
+      height,
+      right: left + width,
+      bottom: top + height,
+      centerX: left + width / 2,
+      centerY: top + height / 2,
+    }
+  }
+
   const beginDissolve = () => {
-    if (dissolveStartedRef.current) return
+    if (dissolveStartedRef.current || collapseStartedRef.current) return
     dissolveStartedRef.current = true
     phaseRef.current = 'dissolve'
 
@@ -288,12 +409,11 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
       return
     }
 
-    const dpr = window.devicePixelRatio || 1
+    const dpr = getRenderDpr()
     const displayWidth = canvas.width / dpr
     const displayHeight = canvas.height / dpr
     const particles = particlesRef.current
 
-    // Stagger kills so the dissolve reads as a wave rather than an instant pop.
     particles.forEach((particle, index) => {
       window.setTimeout(() => {
         particle.kill(displayWidth, displayHeight)
@@ -306,8 +426,66 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
     }
   }
 
+  /** Stream particles toward a moving turquoise attractor (canvas CSS px). */
+  const beginAttract = (cssX, cssY) => {
+    if (collapseStartedRef.current || dissolveStartedRef.current) return
+    collapseStartedRef.current = true
+    phaseRef.current = 'attract'
+    attractorRef.current = { x: cssX, y: cssY, locked: false, active: true }
+
+    const particles = particlesRef.current
+    const teal = { r: 75, g: 224, b: 213 }
+    const count = particles.length || 1
+
+    const scored = particles.map((particle) => {
+      const dx = particle.pos.x - cssX
+      const dy = particle.pos.y - cssY
+      return { particle, dist: dx * dx + dy * dy }
+    })
+    scored.sort((a, b) => a.dist - b.dist)
+
+    scored.forEach(({ particle }, order) => {
+      const delay = Math.min((order / count) * 180, 200)
+      window.setTimeout(() => {
+        if (dissolveStartedRef.current) return
+        particle.beginAttract(teal)
+        if (attractorRef.current.locked) particle.lockAbsorb()
+        particle.target.x = attractorRef.current.x + particle.orbitOx
+        particle.target.y = attractorRef.current.y + particle.orbitOy
+      }, delay)
+    })
+  }
+
+  const setAttractor = (cssX, cssY) => {
+    if (!attractorRef.current.active || attractorRef.current.locked) return
+    attractorRef.current.x = cssX
+    attractorRef.current.y = cssY
+  }
+
+  const lockAttractor = () => {
+    if (!attractorRef.current.active) return
+    attractorRef.current.locked = true
+    phaseRef.current = 'collapse'
+    particlesRef.current.forEach((particle) => {
+      if (particle.attracting) particle.lockAbsorb()
+    })
+  }
+
+  /** Pull every particle into a single seed (canvas CSS px). */
+  const beginCollapse = (cssX, cssY) => {
+    beginAttract(cssX, cssY)
+    attractorRef.current.x = cssX
+    attractorRef.current.y = cssY
+    lockAttractor()
+  }
+
   useImperativeHandle(ref, () => ({
     dissolve: beginDissolve,
+    collapseTo: beginCollapse,
+    attractTo: beginAttract,
+    setAttractor,
+    lockAttractor,
+    getWordBounds,
   }))
 
   const animate = () => {
@@ -316,11 +494,9 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
 
     const ctx = canvas.getContext('2d')
     const particles = particlesRef.current
-    const dpr = window.devicePixelRatio || 1
+    const dpr = getRenderDpr()
     const phase = phaseRef.current
 
-    // Black trails only while the intro stage is opaque. After formation,
-    // clear cleanly so the homepage can show through during the FLIP handoff.
     if (phase === 'form') {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.08)'
       ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr)
@@ -333,6 +509,35 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
 
     for (let i = particles.length - 1; i >= 0; i--) {
       const particle = particles[i]
+      const attractor = attractorRef.current
+
+      if (particle.attracting || particle.collapsing) {
+        if (attractor.active) {
+          particle.target.x = attractor.x + (particle.orbitOx || 0)
+          particle.target.y = attractor.y + (particle.orbitOy || 0)
+          particle.home.x = particle.target.x
+          particle.home.y = particle.target.y
+        }
+
+        particle.move('form')
+
+        if (particle.collapsing) {
+          particle.particleSize = Math.max(1.2, particle.particleSize * 0.965)
+        }
+
+        particle.draw(ctx, drawAsPoints, dpr)
+
+        if (particle.collapsing) {
+          const distance = Math.sqrt(
+            Math.pow(particle.pos.x - particle.target.x, 2) +
+              Math.pow(particle.pos.y - particle.target.y, 2)
+          )
+          if (distance < 11 || particle.particleSize < 1.4) {
+            particles.splice(i, 1)
+          }
+        }
+        continue
+      }
 
       if (!particle.isKilled) {
         livingCount += 1
@@ -385,6 +590,23 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
       }
     }
 
+    if (
+      (phase === 'collapse' || phase === 'attract') &&
+      collapseStartedRef.current &&
+      attractorRef.current.locked &&
+      particles.length === 0 &&
+      !hasCompletedRef.current
+    ) {
+      hasCompletedRef.current = true
+      isAnimatingRef.current = false
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+      onDissolveCompleteRef.current?.()
+      return
+    }
+
     if (phase === 'dissolve' && dissolveStartedRef.current && livingCount === 0 && !hasCompletedRef.current) {
       hasCompletedRef.current = true
       isAnimatingRef.current = false
@@ -392,7 +614,6 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
         cancelAnimationFrame(animationRef.current)
         animationRef.current = null
       }
-      // Let the opacity transition finish, then notify.
       window.setTimeout(() => onDissolveCompleteRef.current?.(), 280)
       return
     }
@@ -406,9 +627,8 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const dpr = window.devicePixelRatio || 1
-
     const updateCanvasSize = () => {
+      const dpr = getRenderDpr()
       const container = canvas.parentElement
       let width
       let height
@@ -451,10 +671,24 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
     if (!initDelay) initAnimation()
 
     const handleResize = () => {
-      if (hasCompletedRef.current || phaseRef.current === 'dissolve') return
+      if (
+        hasCompletedRef.current ||
+        phaseRef.current === 'dissolve' ||
+        phaseRef.current === 'collapse' ||
+        phaseRef.current === 'attract'
+      ) {
+        return
+      }
       const delay = window.innerWidth < 768 ? 150 : 0
       window.setTimeout(() => {
-        if (hasCompletedRef.current || phaseRef.current === 'dissolve') return
+        if (
+          hasCompletedRef.current ||
+          phaseRef.current === 'dissolve' ||
+          phaseRef.current === 'collapse' ||
+          phaseRef.current === 'attract'
+        ) {
+          return
+        }
         updateCanvasSize()
         if (phaseRef.current === 'form' && !hasFormedRef.current) {
           formText(text, canvas)
