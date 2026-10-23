@@ -6,7 +6,7 @@ const SEQUENCE = [
   {
     id: 'anita',
     text: 'ANITA DANTANI',
-    gradientClass: 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400',
+    gradientClass: 'resume-ink',
   },
 ]
 
@@ -482,9 +482,9 @@ const ParticleIntro = forwardRef(function ParticleIntro(
           opacity: 0,
           transform: 'translate(-50%, -50%)',
           background:
-            'radial-gradient(circle, rgba(75,224,213,0.9) 0%, rgba(112,65,197,0.5) 36%, rgba(75,224,213,0.1) 60%, rgba(75,224,213,0) 76%)',
+            'radial-gradient(circle, rgba(240,153,96,0.9) 0%, rgba(189,80,35,0.5) 36%, rgba(240,153,96,0.1) 60%, rgba(240,153,96,0) 76%)',
           boxShadow:
-            '0 0 36px rgba(75,224,213,0.65), 0 0 72px rgba(112,65,197,0.4), inset 0 0 28px rgba(75,224,213,0.45)',
+            '0 0 36px rgba(240,153,96,0.65), 0 0 72px rgba(189,80,35,0.4), inset 0 0 28px rgba(240,153,96,0.45)',
           mixBlendMode: 'screen',
           willChange: 'left, top, width, height, opacity',
         }}

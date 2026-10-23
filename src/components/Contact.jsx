@@ -23,12 +23,12 @@ export default function Contact() {
     <section id="contact" tabIndex={-1} className="section-padding editorial-contact relative">
       <div className="container-width">
         <RevealOnScroll>
-          <p className="eyebrow">05 / Good things start with a conversation</p>
-          <h2 className="contact-statement"><a href={'mailto:' + profile.email}><span>Let's build<br /><em className="editorial-em">what's next.</em></span><span className="contact-orbit-link"><ArrowUpRight strokeWidth={1} aria-hidden="true" /></span></a></h2>
+          <p className="eyebrow">05 / Get in touch</p>
+          <h2 className="contact-statement"><a href={'mailto:' + profile.email}><span>Have something<br /><em className="editorial-em">in mind?</em></span><span className="contact-orbit-link"><ArrowUpRight strokeWidth={1} aria-hidden="true" /></span></a></h2>
           <div className="contact-conversation">
             <div>
-              <p className="contact-invitation">A new storefront. A better checkout. A bigger challenge. Tell me what you're thinking.</p>
-              <div className="availability-badge mt-6"><span className="hero-status-dot" aria-hidden="true" />Full-time · Freelance · Consulting</div>
+              <p className="contact-invitation">Tell me about your store, the integration that's proving difficult, or the team you're building. I'd be happy to talk.</p>
+              <p className="contact-role-note">{profile.role}<br />{profile.currentRole} at {profile.currentCompany}</p>
             </div>
             <div className="contact-details">
               <a href={'mailto:' + profile.email} className="contact-email">{profile.email}<ArrowUpRight size={22} className="shrink-0" aria-hidden="true" /></a>

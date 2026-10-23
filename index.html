@@ -2,49 +2,50 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="theme-color" content="#130f1a" />
+    <meta name="theme-color" content="#000000" />
     <meta name="robots" content="index, follow" />
     <script>
       // Apply the saved theme before the first paint, including restricted-storage browsers.
       try {
         var savedTheme = localStorage.getItem('theme');
-        var darkTheme = savedTheme === 'dark' || (savedTheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        var darkTheme = savedTheme !== 'light';
         document.documentElement.classList.toggle('dark', darkTheme);
         document.documentElement.style.colorScheme = darkTheme ? 'dark' : 'light';
-        document.querySelector('meta[name="theme-color"]').setAttribute('content', darkTheme ? '#130f1a' : '#f4f7fa');
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', darkTheme ? '#000000' : '#f4f5f6');
       } catch (_) {
-        document.documentElement.classList.toggle('dark', matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = 'dark';
       }
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://anita-portfolio-one.vercel.app/" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Shopify Plus storefronts, custom apps, checkout extensions, and commerce integrations. Explore Anita Dantani’s work and get in touch." />
+    <meta name="description" content="Senior Shopify Full Stack Developer and Programming Team Lead at Zerb. Shopify Plus storefronts, custom apps, checkout extensions, and integrations for DTC and B2B brands." />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://anita-portfolio-one.vercel.app/" />
-    <meta property="og:title" content="Anita Dantani - Senior Shopify Plus Developer" />
+    <meta property="og:title" content="Anita Dantani - Senior Shopify Full Stack Developer" />
     <meta property="og:site_name" content="Anita Dantani" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:description" content="Shopify Plus storefronts, custom apps, checkout extensions, and commerce integrations. Explore Anita Dantani’s work and get in touch." />
+    <meta property="og:description" content="Senior Shopify Full Stack Developer and Programming Team Lead at Zerb. Shopify Plus storefronts, custom apps, checkout extensions, and integrations for DTC and B2B brands." />
     <meta property="og:image" content="https://anita-portfolio-one.vercel.app/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Anita Dantani - Senior Shopify Plus Developer and E-commerce Technical Lead" />
+    <meta property="og:image:alt" content="Anita Dantani - Senior Shopify Full Stack Developer. From storefront to systems." />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://anita-portfolio-one.vercel.app/" />
-    <meta name="twitter:title" content="Anita Dantani - Senior Shopify Plus Developer" />
-    <meta name="twitter:description" content="Shopify Plus storefronts, custom apps, checkout extensions, and commerce integrations. Explore Anita Dantani’s work and get in touch." />
+    <meta name="twitter:title" content="Anita Dantani - Senior Shopify Full Stack Developer" />
+    <meta name="twitter:description" content="Senior Shopify Full Stack Developer and Programming Team Lead at Zerb. Shopify Plus storefronts, custom apps, checkout extensions, and integrations for DTC and B2B brands." />
     <meta name="twitter:image" content="https://anita-portfolio-one.vercel.app/og-image.jpg" />
-    <meta name="twitter:image:alt" content="Anita Dantani - Senior Shopify Plus Developer and E-commerce Technical Lead" />
+    <meta name="twitter:image:alt" content="Anita Dantani - Senior Shopify Full Stack Developer. From storefront to systems." />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <title>Anita Dantani - Senior Shopify Plus Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Anita Dantani - Senior Shopify Full Stack Developer</title>
 
     <!-- Structured data for SEO -->
     <script type="application/ld+json">
@@ -52,20 +53,26 @@
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Anita Dantani",
-        "jobTitle": "Senior Shopify Plus Developer",
-        "description": "Senior Shopify Plus Developer & E-commerce Technical Lead specialising in high-performance Shopify stores, custom apps, and checkout optimization.",
+        "jobTitle": "Programming Team Lead",
+        "description": "Senior Shopify Full Stack Developer and Programming Team Lead at Zerb, building Shopify and Shopify Plus solutions for DTC and B2B brands.",
         "url": "https://anita-portfolio-one.vercel.app/",
+        
         "image": "https://anita-portfolio-one.vercel.app/og-image.jpg",
         "sameAs": [
           "https://www.linkedin.com/in/anita-dantani/"
         ],
         "worksFor": [
-          { "@type": "Organization", "name": "Function Growth" }
+          { "@type": "Organization", "name": "Zerb" }
         ],
         "knowsAbout": [
           "Shopify Plus",
           "Checkout Extensions",
           "Shopify Functions",
+          "React",
+          "TypeScript",
+          "Node.js",
+          "GraphQL",
+          "Shopify B2B",
           "E-commerce Performance Optimization",
           "Custom Shopify Apps"
         ]
@@ -83,9 +90,9 @@
     <noscript>
       <main style="max-width: 720px; margin: 80px auto; padding: 24px; font-family: system-ui, sans-serif;">
         <h1>Anita Dantani</h1>
-        <p>Senior Shopify Plus Developer &amp; E-commerce Technical Lead.</p>
+        <p>Senior Shopify Full Stack Developer &amp; Programming Team Lead at Zerb.</p>
         <p>I build Shopify Plus storefronts, custom apps, checkout extensions, and commerce integrations.</p>
-        <p>This portfolio uses JavaScript. You can still <a href="/Anita_Shopify_developer_7Yrs.pdf">download my résumé</a> or <a href="mailto:anitadantani0@gmail.com">email me</a>.</p>
+        <p>This portfolio uses JavaScript. You can still <a href="/Anita_Dantani_Resume_2026.pdf">download my résumé</a> or <a href="mailto:anitadantani0@gmail.com">email me</a>.</p>
       </main>
     </noscript>
     <script type="module" src="/src/main.jsx"></script>

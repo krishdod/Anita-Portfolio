@@ -4,68 +4,55 @@
 
 @layer base {
   :root {
-    /* Light mode palette (modern “mint + indigo + rose”) */
-    --background: 210 40% 97%;
-    --foreground: 222.2 32% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
-    --primary: 237 67% 47%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 28% 90%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 22% 94%;
-    --muted-foreground: 215.4 16% 36%;
-    --accent: 252 85% 64%;
-    --accent-foreground: 210 40% 98%;
+    /* A neutral light counterpart to the charcoal and burnt-orange default. */
+    --background: 210 9% 96%;
+    --foreground: 210 8% 12%;
+    --card: 210 7% 91%;
+    --card-foreground: 210 8% 12%;
+    --popover: 210 9% 98%;
+    --popover-foreground: 210 8% 12%;
+    --primary: 18 74% 35%;
+    --primary-foreground: 210 9% 98%;
+    --secondary: 210 6% 89%;
+    --secondary-foreground: 210 8% 12%;
+    --muted: 210 6% 90%;
+    --muted-foreground: 210 5% 37%;
+    --accent: 18 74% 35%;
+    --accent-foreground: 210 9% 98%;
     --destructive: 0 72% 45%;
     --destructive-foreground: 210 40% 98%;
-    --border: 216 18% 86%;
-    --input: 216 18% 86%;
-    --ring: 237 67% 47%;
+    --border: 210 5% 78%;
+    --input: 210 5% 48%;
+    --ring: 18 74% 35%;
     --radius: 0.5rem;
 
-    /* Jewel tones stay legible against the light surface. */
-    --hero-ink-violet: #7041c5;
-    --hero-ink-rose: #b82773;
-    --hero-ink-blue: #2858ce;
-    --hero-ink-teal: #087d84;
-    --hero-outline: #7866a0;
-    --hero-outline-fill: rgb(112 65 197 / .08);
-    --hero-shine: rgb(255 255 255 / .22);
+    --hero-outline: hsl(var(--primary));
+    --hero-outline-fill: transparent;
   }
 
   .dark {
-    /* A continuous deep-plum foundation with amethyst and jade accents. */
-    --background: 260 25% 8%;
-    --foreground: 252 35% 96%;
-    --card: 258 28% 15%;
-    --card-foreground: 252 35% 96%;
-    --popover: 258 28% 13%;
-    --popover-foreground: 252 35% 96%;
-    --primary: 258 95% 80%;
-    --primary-foreground: 260 25% 8%;
-    --secondary: 255 25% 19%;
-    --secondary-foreground: 252 35% 96%;
-    --muted: 255 24% 18%;
-    --muted-foreground: 246 18% 72%;
-    --accent: 171 62% 61%;
-    --accent-foreground: 260 25% 8%;
+    /* Pitch-black canvas, chalk-white type, and burnt-orange detail. */
+    --background: 0 0% 0%;
+    --foreground: 30 10% 94%;
+    --card: 0 0% 4%;
+    --card-foreground: 30 10% 94%;
+    --popover: 0 0% 3%;
+    --popover-foreground: 30 10% 94%;
+    --primary: 23 78% 62%;
+    --primary-foreground: 210 8% 9%;
+    --secondary: 210 5% 20%;
+    --secondary-foreground: 30 10% 94%;
+    --muted: 210 5% 19%;
+    --muted-foreground: 210 5% 68%;
+    --accent: 23 78% 62%;
+    --accent-foreground: 210 8% 9%;
     --destructive: 350 80% 70%;
     --destructive-foreground: 260 25% 8%;
-    --border: 257 22% 30%;
-    --input: 257 18% 56%;
-    --ring: 258 95% 80%;
+    --border: 210 5% 29%;
+    --input: 210 5% 51%;
+    --ring: 23 78% 62%;
 
-    /* Luminous amethyst, rose, sapphire, and teal for the signature. */
-    --hero-ink-violet: #b895ff;
-    --hero-ink-rose: #f47dbd;
-    --hero-ink-blue: #779dff;
-    --hero-ink-teal: #4be0d5;
-    --hero-outline: #c2b7e4;
-    --hero-outline-fill: rgb(184 149 255 / .07);
-    --hero-shine: rgb(255 255 255 / .55);
+    --hero-outline: hsl(var(--primary));
   }
 
   * {
@@ -82,7 +69,7 @@
 
   /* Enhanced typography for headings */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
     font-weight: 700;
     letter-spacing: -0.045em;
     -webkit-font-smoothing: antialiased;

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView, useMotionValue, useSpring } from 'framer-motion'
-import { ArrowDown, ArrowUpRight, Code2, Download, Sparkle } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, Download } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useMotionPreference } from '../hooks/useMotionPreference'
 import { useMediaQuery } from '../hooks/useMediaQuery'
@@ -9,8 +9,8 @@ import { projects, getProjectImage, getProjectSrcSet } from '../data/projects'
 
 const stats = [
   { value: '7+', label: 'years of experience' },
-  { value: '60+', label: 'Shopify projects' },
-  { value: '30+', label: 'clients worked with' },
+  { value: 'DTC / B2B', label: 'commerce experience' },
+  { value: 'Full stack', label: 'front to back' },
 ]
 const showcase = ['byneil', 'sabyasachi', 'deckingwood'].map((slug) =>
   projects.find((project) => project.slug === slug)
@@ -67,8 +67,8 @@ export default function HeroEnhanced({ nameFromIntro = false, handoffPhase = 'do
   const followPointer = (event) => {
     if (reducedMotion || !finePointer || event.pointerType === 'touch') return
     const bounds = event.currentTarget.getBoundingClientRect()
-    tiltX.set((-(event.clientY - bounds.top - bounds.height / 2) / bounds.height) * 5)
-    tiltY.set(((event.clientX - bounds.left - bounds.width / 2) / bounds.width) * 5)
+    tiltX.set((-(event.clientY - bounds.top - bounds.height / 2) / bounds.height) * 10)
+    tiltY.set(((event.clientX - bounds.left - bounds.width / 2) / bounds.width) * 10)
   }
 
   const entrance = (delay = 0) => ({
@@ -84,16 +84,14 @@ export default function HeroEnhanced({ nameFromIntro = false, handoffPhase = 'do
   const handoffAttr = fromIntro && handoffPhase !== 'done' ? handoffPhase : undefined
 
   return (
-    <section id="home" tabIndex={-1} className="hero-section studio-hero relative">
-      <div className="hero-atmosphere" aria-hidden="true" />
+    <section id="home" tabIndex={-1} className="hero-section studio-hero relative" data-hero-motion={nameInView && typeMotionReady && !reducedMotion ? 'running' : 'paused'}>
       <div className="container-width relative z-10">
         <motion.div className="hero-topline" {...entrance(0)}>
           <p className="hero-kicker">
-            <Code2 size={18} aria-hidden="true" /> A developer's eye. A maker's mindset.
+            <span className="hero-status-dot" aria-hidden="true" /> Shopify development & technical leadership
           </p>
-          <div className="availability-badge">
-            <span className="hero-status-dot" aria-hidden="true" />
-            Open to full-time & freelance
+          <div className="hero-current-role">
+            <span>Currently</span> {profile.currentRole} at <strong>{profile.currentCompany}</strong>
           </div>
         </motion.div>
 
@@ -115,34 +113,37 @@ export default function HeroEnhanced({ nameFromIntro = false, handoffPhase = 'do
             style={!fromIntro || handoffPhase === 'done' || handoffPhase === 'content' ? { opacity: 1 } : undefined}
           >
             <span className="sr-only">Anita Dantani</span>
-            <span className="hero-first-name" aria-hidden="true">
-              <span className="hero-name-stroke font-light">Anita</span>
+            <span className="hero-first-name hero-word-mask" aria-hidden="true">
+              <motion.span className="hero-name-stroke" initial={reducedMotion ? false : { y: '110%', rotate: 3 }}
+                animate={nameVisible ? { y: '0%', rotate: 0 } : { y: '110%', rotate: 3 }}
+                transition={{ duration: reducedMotion ? 0 : .95, ease: [.22, 1, .36, 1] }}>Anita</motion.span>
             </span>
             <span className="hero-surname" aria-hidden="true">
-              <span className="hero-name-color" data-text="Dantani">
+              <motion.span className="hero-name-color" data-text="Dantani" initial={reducedMotion ? false : { y: '110%', rotate: 3 }}
+                animate={nameVisible ? { y: '0%', rotate: 0 } : { y: '110%', rotate: 3 }}
+                transition={{ duration: reducedMotion ? 0 : .95, delay: reducedMotion ? 0 : .12, ease: [.22, 1, .36, 1] }}>
                 Dantani
-              </span>
+              </motion.span>
               <span className="hero-name-period" />
             </span>
-            <Sparkle className="studio-name-spark" aria-hidden="true" strokeWidth={1} />
           </h1>
         </div>
 
         <div className="studio-hero-grid">
           <motion.div className="studio-introduction" {...entrance(0.06)}>
-            <p className="eyebrow">Senior Shopify Plus Developer</p>
+            <p className="eyebrow">{profile.role}</p>
             <h2 className="studio-manifesto">
-              Code with intent.
+              The storefront.
               <br />
-              <em>Commerce with character.</em>
+              <em>The systems behind it.</em>
             </h2>
             <p className="hero-description">
-              I build Shopify Plus storefronts, custom apps, and the systems behind them. Thoughtful
-              experiences, from the first impression to the final checkout.
+              I help DTC and B2B brands build on Shopify. From a Figma handoff to custom apps,
+              checkout logic, and API integrations, I take care of the details on both sides of the screen.
             </p>
             <div className="hero-actions">
               <Link to="/#portfolio" className="button-primary hero-work-cta">
-                Explore my work{' '}
+                See selected work{' '}
                 <span>
                   <ArrowUpRight size={19} aria-hidden="true" />
                 </span>
@@ -152,15 +153,15 @@ export default function HeroEnhanced({ nameFromIntro = false, handoffPhase = 'do
               </Link>
             </div>
             <p className="studio-specialisms">
-              Shopify Plus <span aria-hidden="true">/</span> Custom apps{' '}
-              <span aria-hidden="true">/</span> Technical leadership
+              Liquid <span aria-hidden="true">/</span> React & TypeScript{' '}
+              <span aria-hidden="true">/</span> Node.js & GraphQL
             </p>
           </motion.div>
 
           <motion.div className="studio-showcase" {...entrance(0.1)}>
             <div className="studio-showcase-top">
               <span>
-                <span className="hero-status-dot" aria-hidden="true" /> A glimpse of my work
+                Selected from the project archive
               </span>
               <span className="studio-mono" aria-hidden="true">
                 0{active + 1} — 03
@@ -222,6 +223,7 @@ export default function HeroEnhanced({ nameFromIntro = false, handoffPhase = 'do
             <span className="sr-only" role="status">
               Featured project: {project.title}
             </span>
+            <p className="showcase-footnote"><span aria-hidden="true">↳</span> Real storefronts. Different brands, different challenges.</p>
           </motion.div>
         </div>
 
@@ -230,7 +232,7 @@ export default function HeroEnhanced({ nameFromIntro = false, handoffPhase = 'do
             {stats.map(({ value, label }) => (
               <div key={label}>
                 <dt>{label}</dt>
-                <dd>{value}</dd>
+                <dd>{value === '7+' ? <><span className="sr-only">7+</span><span aria-hidden="true"><span className="metric-value" data-count="7">7</span>+</span></> : value}</dd>
               </div>
             ))}
           </dl>

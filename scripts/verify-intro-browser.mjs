@@ -221,6 +221,7 @@ try {
       viewport: { width: 1280, height: 720 },
       colorScheme: 'light',
     })
+    await context.addInitScript(() => localStorage.setItem('theme', 'light'))
     const { page, capture } = await openFresh(context, 'theme=light')
     await page.evaluate(() => {
       document.documentElement.classList.remove('dark')

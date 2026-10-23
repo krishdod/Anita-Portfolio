@@ -1,31 +1,19 @@
 import sharp from 'sharp'
+import { profile } from '../src/data/profile.js'
 
 const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0a0a0f"/>
-      <stop offset="100%" stop-color="#12121a"/>
-    </linearGradient>
-    <linearGradient id="g" x1="0" x2="1">
-      <stop offset="0%" stop-color="#3b82f6"/>
-      <stop offset="50%" stop-color="#8b5cf6"/>
-      <stop offset="100%" stop-color="#ec4899"/>
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="630" fill="url(#bg)"/>
-  <rect x="72" y="72" width="8" height="180" rx="4" fill="url(#g)"/>
-  <text x="110" y="130" fill="#a1a1aa" font-family="system-ui,sans-serif" font-size="28" letter-spacing="6">SHOPIFY PLUS DEVELOPER</text>
-  <text x="110" y="240" fill="#ffffff" font-family="system-ui,sans-serif" font-size="84" font-weight="700">Anita Dantani</text>
-  <text x="110" y="320" fill="#d4d4d8" font-family="system-ui,sans-serif" font-size="36">Senior Shopify Plus Developer</text>
-  <text x="110" y="380" fill="#a1a1aa" font-family="system-ui,sans-serif" font-size="28">&amp; E-commerce Technical Lead</text>
-  <text x="110" y="500" fill="#71717a" font-family="system-ui,sans-serif" font-size="24">6+ years · 60+ projects · Checkout Extensibility</text>
-  <text x="110" y="560" fill="url(#g)" font-family="system-ui,sans-serif" font-size="22" font-weight="600">anitadantani.com</text>
-</svg>
-`
+  <rect width="1200" height="630" fill="#000000"/>
+  <path d="M64 75H1136M64 515H1136" stroke="#484b4e"/>
+  <text x="64" y="55" fill="#ea9553" font-family="monospace" font-size="15" letter-spacing="3">SHOPIFY DEVELOPMENT &amp; TECHNICAL LEADERSHIP</text>
+  <text x="62" y="235" fill="#f1f0ef" font-family="Arial,sans-serif" font-size="110" font-weight="700" letter-spacing="-6">Anita Dantani<tspan fill="#ea9553">.</tspan></text>
+  <text x="68" y="325" fill="#f1f0ef" font-family="Arial,sans-serif" font-size="44" font-weight="600" letter-spacing="-2">The storefront.</text>
+  <text x="68" y="382" fill="#ea9553" font-family="Arial,sans-serif" font-size="44" font-weight="600" letter-spacing="-2">The systems behind it.</text>
+  <text x="68" y="460" fill="#a9adb1" font-family="Arial,sans-serif" font-size="23">7+ years of experience · DTC &amp; B2B commerce</text>
+  <text x="68" y="555" fill="#f1f0ef" font-family="Arial,sans-serif" font-size="21">${profile.role}</text>
+  <text x="68" y="589" fill="#a9adb1" font-family="Arial,sans-serif" font-size="18">${profile.currentRole} at ${profile.currentCompany}</text>
+  <text x="1132" y="581" text-anchor="end" fill="#ea9553" font-family="Arial,sans-serif" font-size="16">${new URL(profile.siteUrl).host}</text>
+</svg>`
 
-await sharp(Buffer.from(svg))
-  .jpeg({ quality: 88, mozjpeg: true })
-  .toFile('public/og-image.jpg')
-
+await sharp(Buffer.from(svg)).jpeg({ quality: 88, mozjpeg: true }).toFile('public/og-image.jpg')
 console.log('Generated public/og-image.jpg')

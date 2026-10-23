@@ -9,8 +9,8 @@ export default function ProjectsEnhanced() {
     <section id="portfolio" tabIndex={-1} className="section-padding editorial-work relative">
       <div className="container-width">
         <div className="section-header flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <SectionHeading eyebrow="01 / Selected work" title={<>Different brands.<br /><em className="editorial-em">Distinct experiences.</em></>}>
-            A few of the stores I've worked on. Each with its own character, challenges, and way of doing commerce.
+          <SectionHeading eyebrow="01 / Selected work" title={<>Some stores<br /><em className="editorial-em">I've helped build.</em></>}>
+            Luxury fashion, jewelry, and everyday commerce. A selection of Shopify projects I've worked on.
           </SectionHeading>
           <Link to="/all-work" className="text-link mb-1 shrink-0">All {projects.length} projects <ArrowUpRight size={18} aria-hidden="true" /></Link>
         </div>

@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react'
 import { Navigation } from './components/layout/Navigation'
 import { SmoothCursor } from './components/effects/SmoothCursor'
 import { ScrollProgress } from './components/effects/ScrollProgress'
+import CommerceMarquee from './components/CommerceMarquee'
 import { SmoothScrolling } from './components/effects/SmoothScrolling'
 import HeroEnhanced from './components/HeroEnhanced'
 import ProjectsEnhanced from './components/ProjectsEnhanced'
@@ -15,17 +16,12 @@ import Footer from './components/Footer'
 import ParticleIntro from './components/ParticleIntro'
 import NotFound from './pages/NotFound'
 import { useMotionPreference } from './hooks/useMotionPreference'
-import { usePerfMode } from './hooks/usePerfMode'
 import { usePageMeta } from './hooks/usePageMeta'
+import { profile } from './data/profile'
 import { smoothScrollTo } from './lib/utils'
 
 const AllProjects = lazy(() => import('./pages/AllProjects'))
-const SparklesCore = lazy(() =>
-  import('./components/ui/sparkles').then((module) => ({ default: module.SparklesCore }))
-)
-const BackgroundBeams = lazy(() =>
-  import('./components/ui/background-beams').then((module) => ({ default: module.BackgroundBeams }))
-)
+const CinematicMotion = lazy(() => import('./components/effects/CinematicMotion').then((module) => ({ default: module.CinematicMotion })))
 let hasEnteredPortfolio = false
 
 function PageLoading() {
@@ -75,7 +71,6 @@ class PageErrorBoundary extends Component {
 
 function SiteLayout() {
   const location = useLocation()
-  const perfMode = usePerfMode()
 
   useEffect(() => {
     if (location.pathname === '/') return
@@ -86,23 +81,6 @@ function SiteLayout() {
 
   return (
     <div className="site-shell">
-      <div className="ambient-background" aria-hidden="true">
-        <div className="absolute inset-0 gradient-mesh opacity-25 dark:opacity-35" />
-        {!perfMode && (
-          <Suspense fallback={null}>
-            <BackgroundBeams className="opacity-20" />
-            <SparklesCore
-              id="ambient-sparkles"
-              background="transparent"
-              minSize={0.6}
-              maxSize={1.6}
-              particleDensity={18}
-              particleColor="110, 130, 200"
-              className="pointer-events-none"
-            />
-          </Suspense>
-        )}
-      </div>
       <div className="page-texture" aria-hidden="true" />
       <SmoothScrolling />
       <SmoothCursor />
@@ -156,8 +134,8 @@ function HomePage() {
   }, [finishIntro])
 
   usePageMeta(
-    'Anita Dantani — Senior Shopify Plus Developer',
-    'Shopify Plus storefronts, custom apps, checkout extensions, and commerce integrations. Explore Anita Dantani’s work and get in touch.',
+    `${profile.name} — ${profile.role}`,
+    profile.description,
     '/'
   )
 
@@ -310,12 +288,14 @@ function HomePage() {
         </div>
       )}
       <main id="main-content" tabIndex={-1} className="relative">
+        <Suspense fallback={null}><CinematicMotion enabled={!showIntro} /></Suspense>
         {showContent && (
           <>
             <HeroEnhanced
               nameFromIntro={nameFromIntro && !reducedMotion && showIntro}
               handoffPhase={nameFromIntro && !reducedMotion && showIntro ? handoffPhase : 'done'}
             />
+            <CommerceMarquee />
             <ProjectsEnhanced />
             <About />
             <Work />

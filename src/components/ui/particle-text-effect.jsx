@@ -151,7 +151,7 @@ class Particle {
     }
   }
 
-  collapseToward(x, y, accent = { r: 75, g: 224, b: 213 }) {
+  collapseToward(x, y, accent = { r: 240, g: 153, b: 96 }) {
     this.startColor = {
       r: this.startColor.r + (this.targetColor.r - this.startColor.r) * this.colorWeight,
       g: this.startColor.g + (this.targetColor.g - this.startColor.g) * this.colorWeight,
@@ -177,7 +177,7 @@ class Particle {
   }
 
   /** Stream toward a moving cursor glow without absorbing yet. */
-  beginAttract(accent = { r: 75, g: 224, b: 213 }) {
+  beginAttract(accent = { r: 240, g: 153, b: 96 }) {
     this.startColor = {
       r: this.startColor.r + (this.targetColor.r - this.startColor.r) * this.colorWeight,
       g: this.startColor.g + (this.targetColor.g - this.startColor.g) * this.colorWeight,
@@ -279,6 +279,7 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
 
     let newColor = { r: 100, g: 150, b: 255 }
     if (gradientClass) {
+      if (gradientClass === 'resume-ink') newColor = { r: 237, g: 239, b: 242 }
       if (gradientClass.includes('blue')) newColor = { r: 59, g: 130, b: 246 }
       if (gradientClass.includes('purple')) newColor = { r: 147, g: 51, b: 234 }
       if (gradientClass.includes('pink')) newColor = { r: 236, g: 72, b: 153 }
@@ -434,7 +435,7 @@ export const ParticleTextEffect = forwardRef(function ParticleTextEffect(
     attractorRef.current = { x: cssX, y: cssY, locked: false, active: true }
 
     const particles = particlesRef.current
-    const teal = { r: 75, g: 224, b: 213 }
+    const teal = { r: 240, g: 153, b: 96 }
     const count = particles.length || 1
 
     const scored = particles.map((particle) => {

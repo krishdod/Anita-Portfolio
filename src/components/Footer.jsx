@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="container-width flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div>
           <p className="text-sm font-semibold">© {new Date().getFullYear()} {profile.name}</p>
-          <p className="text-xs text-muted-foreground mt-1">Thoughtful code. Better commerce.</p>
+          <p className="text-xs text-muted-foreground mt-1">Shopify, from storefront to systems.</p>
         </div>
         <div className="flex flex-wrap items-center gap-5 text-xs sm:text-sm text-muted-foreground">
           <button type="button" onClick={toggleMotion} disabled={systemReduced} aria-pressed={pauseMotion || systemReduced} className="inline-flex items-center gap-2 min-h-11 hover:text-foreground disabled:cursor-default">

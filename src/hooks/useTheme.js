@@ -11,8 +11,7 @@ function savedPreference() {
 
 export function useTheme() {
   const [preference, setPreference] = useState(savedPreference)
-  const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
-  const theme = preference || (systemDark ? 'dark' : 'light')
+  const theme = preference || 'dark'
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
@@ -22,15 +21,11 @@ export function useTheme() {
   }, [theme])
 
   useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const update = (event) => setSystemDark(event.matches)
     const sync = (event) => {
       if (event.key === 'theme' || event.key === null) setPreference(savedPreference())
     }
-    media.addEventListener('change', update)
     window.addEventListener('storage', sync)
     return () => {
-      media.removeEventListener('change', update)
       window.removeEventListener('storage', sync)
     }
   }, [])

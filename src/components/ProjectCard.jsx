@@ -17,6 +17,7 @@ export function ProjectCard({ project, index = 0, layout = 'featured' }) {
         className={'project-card group' + (isRow ? ' project-row' : '') + (isEditorial ? ' editorial-project' : '')}
         aria-label={'View ' + project.title + ' live website (opens in a new tab)'}
       >
+        {isEditorial && <div className="project-scene-heading" aria-hidden="true"><span className="studio-mono">Selected work / {project.id}</span><span>{project.industry}</span></div>}
         <div className="project-image">
           {imageFailed ? (
             <div className="h-full flex flex-col gap-3 items-center justify-center bg-muted text-muted-foreground">

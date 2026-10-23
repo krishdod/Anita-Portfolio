@@ -110,7 +110,7 @@ export function Navigation() {
       <header className={'site-header' + (scrolled ? ' is-scrolled' : '')}>
         <div className="container-width flex items-center justify-between gap-4">
           <Link to="/#home" state={{ skipIntro: true }} className="brand-link" aria-label="Anita Dantani — home" onClick={() => followSection('home')}>
-            <span className="brand-mark" aria-hidden="true">a<span>.</span></span>
+            <span className="brand-mark" aria-hidden="true">ad<span>.</span></span>
             <span className="hidden sm:block text-sm font-semibold tracking-tight">Anita Dantani</span>
           </Link>
           {desktop && <nav aria-label="Primary" className="desktop-nav">{sectionLinks()}</nav>}
