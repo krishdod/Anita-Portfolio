@@ -5,5 +5,9 @@ import { profile } from '../src/data/profile.js'
 export const releaseAssets = [
   'favicon.svg', 'og-image.jpg', 'robots.txt', 'sitemap.xml', '404.html',
   profile.resume.slice(1),
+  'fonts/bricolage-grotesque-latin-a79fdb52.woff2',
+  'fonts/instrument-sans-latin-2ee17598.woff2',
+  'fonts/jetbrains-mono-latin-83c005d4.woff2',
+  'fonts/LICENSES.txt',
   ...projects.flatMap((project) => [640, 960, 1440].map((width) => getProjectImage(project, width).slice(1))),
 ]

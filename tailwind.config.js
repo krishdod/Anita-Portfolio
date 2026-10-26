@@ -58,10 +58,10 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['DM Sans', 'system-ui', 'sans-serif'],
-        display: ['Archivo', 'system-ui', 'sans-serif'],
-        heading: ['Archivo', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        sans: ['var(--font-body)'],
+        display: ['var(--font-display)'],
+        heading: ['var(--font-display)'],
+        mono: ['var(--font-mono)'],
       },
       fontSize: {
         '10xl': ['10rem', { lineHeight: '1' }],
