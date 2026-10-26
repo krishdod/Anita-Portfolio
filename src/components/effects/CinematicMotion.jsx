@@ -60,7 +60,7 @@ export function CinematicMotion({ enabled }) {
         }
       })
 
-      root.querySelectorAll('.career-chapter, .toolkit-row').forEach((row) => {
+      root.querySelectorAll('.career-chapter').forEach((row) => {
         gsap.fromTo(row, { '--rule-progress': 0 }, {
           '--rule-progress': 1, duration: .95, ease: 'power3.out',
           scrollTrigger: { trigger: row, start: 'top 92%', once: true },

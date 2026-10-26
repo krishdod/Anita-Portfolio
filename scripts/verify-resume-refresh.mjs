@@ -77,7 +77,13 @@ try {
       check(`${label}_six_roles`, await page.locator('.career-chapter').count() === 6)
       check(`${label}_employment_dates`, career.includes('Sep 2026 – Present') && career.includes('May 2025 – Sep 2026'))
       check(`${label}_education`, career.includes('Computer Science and Tech') && career.includes('Computer Engineering') && career.includes('2023') && career.includes('2020'))
-      check(`${label}_expanded_skills`, (await page.locator('#tech-stack').innerText()).includes('Node.js') && (await page.locator('#tech-stack').innerText()).includes('GA4'))
+      await page.getByRole('tab', { name: 'Backend & integrations' }).click()
+      const backendVisible = await page.getByRole('tabpanel').innerText()
+      await page.getByRole('tab', { name: 'Analytics & measurement' }).click()
+      const analyticsVisible = await page.getByRole('tabpanel').innerText()
+      check(`${label}_expanded_skills`, backendVisible.includes('Node.js') && analyticsVisible.includes('GA4'))
+      await page.getByRole('tab', { name: 'Shopify, end to end' }).click()
+      await page.evaluate(() => window.scrollTo(0, 0))
 
       if (width === 1440 || (width === 375 && theme === 'light')) {
         await page.screenshot({ path: new URL(`${label}-hero.png`, output).pathname.replace(/^\/([A-Z]:)/, '$1') })

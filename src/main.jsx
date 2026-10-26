@@ -3,6 +3,7 @@ import App from './App.jsx'
 import { MotionPreferenceProvider } from './hooks/useMotionPreference'
 import './index.css'
 import './studio.css'
+import './toolkit.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <MotionPreferenceProvider>

@@ -1,5 +1,5 @@
 /**
- * Smoke verification for the committed production build.
+ * Smoke verification for the production build.
  * Usage: node scripts/verify-release-smoke.mjs [baseUrl]
  */
 import { chromium } from 'playwright'
@@ -51,25 +51,17 @@ try {
 
   await page.locator('#tech-stack').scrollIntoViewIfNeeded()
   await page.waitForTimeout(400)
-  const toolkit = await page.evaluate(() => {
-    const section = document.getElementById('tech-stack')
-    return {
-      hasWorkbench: !!section?.querySelector('.toolkit-workbench'),
-      hasEngine: !!section?.querySelector('.toolkit-engine'),
-      hasLedger: !!section?.querySelector('.toolkit-ledger'),
-      rowCount: section?.querySelectorAll('.toolkit-row').length || 0,
-    }
-  })
+  const toolkit = await page.evaluate(() => ({
+    hasWorkbench: !!document.querySelector('#tech-stack .toolkit-workbench'),
+    tabCount: document.querySelectorAll('#tech-stack [role="tab"]').length,
+  }))
   await page.screenshot({ path: path.join(outDir, 'tech-stack-committed.png') })
 
-  // Committed main uses the ledger toolkit, not the unfinished 3D engine.
-  if (!toolkit.hasWorkbench && !toolkit.hasEngine && toolkit.hasLedger && toolkit.rowCount >= 4) {
-    pass('toolkit_committed_ledger_ok', JSON.stringify(toolkit))
-  } else if (toolkit.hasWorkbench || toolkit.hasEngine) {
-    fail('toolkit_unexpected_wip_markup', JSON.stringify(toolkit))
-  } else {
-    fail('toolkit_committed_ledger_ok', JSON.stringify(toolkit))
-  }
+  if (toolkit.hasWorkbench && toolkit.tabCount === 6) pass('toolkit_six_disciplines', JSON.stringify(toolkit))
+  else fail('toolkit_six_disciplines', JSON.stringify(toolkit))
+  await page.getByRole('tab', { name: 'Backend & integrations' }).click()
+  if ((await page.getByRole('tabpanel').innerText()).includes('Node.js')) pass('toolkit_selection_shows_resume_skills')
+  else fail('toolkit_selection_shows_resume_skills')
 
   await page.goto(`${baseUrl}/all-work?smoke=${Date.now()}`, { waitUntil: 'networkidle' })
   if (await page.locator('#main-content').isVisible()) pass('all_work_loads')
